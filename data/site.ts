@@ -6,9 +6,24 @@
  * contact name, phone, WhatsApp number, email, address, map location and hours.
  */
 
-// Vercel exposes the production domain, so canonical links and the sitemap
-// are right even before NEXT_PUBLIC_SITE_URL is set for a custom domain.
-const vercelHost = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL;
+/**
+ * Canonical origin for SEO links. NEXT_PUBLIC_SITE_URL wins; otherwise Vercel's
+ * production domain, so canonical links and the sitemap are right even before a
+ * custom domain is set. Blank or malformed values (an empty variable in the
+ * Vercel dashboard, a domain typed without https://) never break the build.
+ */
+function originFrom(value: string | undefined) {
+  const v = value?.trim();
+  if (!v) return null;
+  const withScheme = /^https?:\/\//i.test(v) ? v : `https://${v}`;
+  return URL.canParse(withScheme) ? new URL(withScheme).origin : null;
+}
+
+const siteUrl =
+  originFrom(process.env.NEXT_PUBLIC_SITE_URL) ??
+  originFrom(process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL) ??
+  originFrom(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+  'http://localhost:3000';
 
 export const site = {
   name: 'Padmavathi Enterprises',
@@ -16,7 +31,7 @@ export const site = {
   tagline: 'Handcrafted Wooden Kitchenware',
   description:
     'Padmavathi Enterprises hand-turns rolling pins, chakla, coconut scrapers, mathani churners, spatulas, spoons, spice boxes and mortar & pestles from solid teak, sheesham, neem and acacia. Chemical-free, food safe and shipped across India.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? (vercelHost ? `https://${vercelHost}` : 'http://localhost:3000'),
+  url: siteUrl,
   locale: 'en_IN',
 
   contact: {
