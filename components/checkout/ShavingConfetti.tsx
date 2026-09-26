@@ -4,14 +4,14 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 
 const RIBBONS = ['#e9b877', '#d9a060', '#c68642', '#f3d3a2', '#b06c34'];
-const BITS = ['#ec4899', '#facc15', '#f9a8d4', '#fde68a'];
+const BITS = ['#3f7a5a', '#facc15', '#b9d3b1', '#fde68a'];
 const CURLS = [
   'M6 30 C 6 12, 30 4, 42 16 C 54 28, 40 46, 26 40 C 14 35, 18 20, 30 22',
   'M4 24 C 14 6, 44 6, 50 22 C 56 40, 30 50, 20 38 C 12 28, 26 16, 36 24',
   'M8 40 C 2 20, 24 2, 42 12 C 58 22, 46 46, 30 44',
 ];
 
-/** Curled wood shavings and a little pink & marigold confetti drifting down, for celebrations. */
+/** Curled wood shavings and a little green & marigold confetti drifting down, for celebrations. */
 export function ShavingConfetti({ count = 46 }: { count?: number }) {
   const reduce = useReducedMotion();
   const [mounted, setMounted] = useState(false);

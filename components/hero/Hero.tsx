@@ -124,7 +124,7 @@ function HeroLoader({ progress, visible }: { progress: number; visible: boolean 
         </svg>
         <div className="h-1 w-48 overflow-hidden rounded-full bg-line">
           <div
-            className="h-full rounded-full bg-[linear-gradient(90deg,#ec4899,#c68642,#facc15)] transition-[width] duration-500 ease-out"
+            className="h-full rounded-full bg-[linear-gradient(90deg,#3f7a5a,#c68642,#facc15)] transition-[width] duration-500 ease-out"
             style={{ width: `${Math.max(6, pct)}%` }}
           />
         </div>
@@ -290,7 +290,7 @@ export function Hero() {
               transition={{ delay: 0.15, duration: 0.8, ease: EASE }}
               className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface/70 px-3.5 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-wood backdrop-blur sm:text-[0.68rem] sm:tracking-[0.26em]"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-pink-strong" aria-hidden="true" />
+              <span className="h-1.5 w-1.5 rounded-full bg-forest" aria-hidden="true" />
               Padmavathi Enterprises
             </motion.p>
             <h1 className="text-[2.75rem] font-semibold leading-[0.98] text-fg sm:text-6xl lg:text-[4.7rem]">
@@ -333,7 +333,7 @@ export function Hero() {
             {scrollMode && (
               <p data-scroll-hint className="mt-8 hidden items-center gap-3 text-sm font-medium text-muted lg:inline-flex">
                 <span className="relative grid h-9 w-6 justify-center rounded-full border-2 border-line-strong pt-1.5" aria-hidden="true">
-                  <span className="pe-scroll-dot block h-2 w-1 rounded-full bg-pink-strong" />
+                  <span className="pe-scroll-dot block h-2 w-1 rounded-full bg-forest" />
                 </span>
                 Scroll to discover
               </p>
@@ -447,7 +447,7 @@ export function Hero() {
                     <span
                       className={cn(
                         'block rounded-full transition-all duration-500',
-                        chapter === i ? 'h-6 w-1.5 bg-[linear-gradient(180deg,#ec4899,#c68642)]' : 'h-1.5 w-1.5 bg-line-strong group-hover:bg-honey',
+                        chapter === i ? 'h-6 w-1.5 bg-[linear-gradient(180deg,#3f7a5a,#c68642)]' : 'h-1.5 w-1.5 bg-line-strong group-hover:bg-honey',
                       )}
                     />
                   </button>

@@ -41,7 +41,7 @@ const publicKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? '';
 const paymentMode: 'demo' | 'test' | 'live' = !publicKey || /x{6,}/i.test(publicKey) ? 'demo' : publicKey.startsWith('rzp_live_') ? 'live' : 'test';
 
 const inputBase =
-  'h-12 w-full rounded-2xl border bg-surface px-4 text-[0.95rem] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-pink-strong focus:shadow-[0_0_0_4px_rgb(236_72_153/0.14)]';
+  'h-12 w-full rounded-2xl border bg-surface px-4 text-[0.95rem] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-forest focus:shadow-[0_0_0_4px_rgb(63_122_90/0.14)]';
 
 function Field({
   label,
@@ -132,17 +132,17 @@ function ChoiceCard({
       onClick={onClick}
       className={cn(
         'relative flex items-center gap-3.5 rounded-2xl border p-4 text-left transition-colors',
-        active ? 'border-pink-strong bg-pink/10' : 'border-line-strong hover:border-honey',
+        active ? 'border-forest bg-sage/10' : 'border-line-strong hover:border-honey',
       )}
     >
-      <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-xl', active ? 'bg-[#be185d] text-white' : 'bg-surface-2 text-fg')}>
+      <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-xl', active ? 'bg-[#2c5a42] text-white' : 'bg-surface-2 text-fg')}>
         <Icon size={20} aria-hidden="true" />
       </span>
       <span>
         <span className="block font-semibold text-fg">{title}</span>
         <span className="block text-xs leading-snug text-muted">{sub}</span>
       </span>
-      {active && <motion.span layoutId={`ring-${group}`} className="absolute inset-0 rounded-2xl ring-2 ring-pink-strong" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />}
+      {active && <motion.span layoutId={`ring-${group}`} className="absolute inset-0 rounded-2xl ring-2 ring-forest" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />}
     </button>
   );
 }
@@ -181,7 +181,7 @@ function DemoPaymentSheet({ open, amount, onResult }: { open: boolean; amount: n
               onClick={() => setMethod(m.id)}
               className={cn(
                 'rounded-2xl border px-2 py-3 text-xs font-semibold transition-colors',
-                method === m.id ? 'border-pink-strong bg-pink/15 text-fg' : 'border-line-strong text-muted hover:border-honey',
+                method === m.id ? 'border-forest bg-sage/15 text-fg' : 'border-line-strong text-muted hover:border-honey',
               )}
             >
               {m.label}
@@ -502,7 +502,7 @@ export function CheckoutView() {
                   <li key={l.key} className="flex items-center gap-3 py-3">
                     <div style={tintStyle(product)} className={cn('relative h-14 w-14 shrink-0 overflow-hidden rounded-xl', tintClasses)}>
                       <Image src={l.image} alt="" fill sizes="56px" className="object-contain p-1" />
-                      <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#be185d] px-1 text-[0.65rem] font-bold text-white">
+                      <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#2c5a42] px-1 text-[0.65rem] font-bold text-white">
                         {l.qty}
                       </span>
                     </div>

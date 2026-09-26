@@ -31,7 +31,7 @@ export default function Template({ children }: { children: ReactNode }) {
           <motion.span initial={{ scale: 1, opacity: 1 }} animate={{ scale: 0.7, opacity: 0 }} transition={{ duration: 0.4 }}>
             <LogoMark className="h-20 w-20 drop-shadow-lg" />
           </motion.span>
-          <span className="absolute inset-x-0 bottom-0 h-3 bg-[linear-gradient(90deg,#ec4899,#facc15,#ec4899)]" />
+          <span className="absolute inset-x-0 bottom-0 h-3 bg-[linear-gradient(90deg,#3f7a5a,#facc15,#3f7a5a)]" />
         </motion.div>
       )}
       <motion.div

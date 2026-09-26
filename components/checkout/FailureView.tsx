@@ -24,7 +24,7 @@ function StoppedBelan() {
       <rect x="160" y="52" width="30" height="12" rx="6" fill="#a0522d" />
       <rect x="44" y="50" width="112" height="4" rx="2" fill="#fff3dc" opacity="0.45" />
       <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: [0, 1, 1, 0], y: [6, -4, -10, -16] }} transition={{ duration: 2.4, repeat: Infinity, delay: 0.8 }}>
-        <text x="100" y="30" textAnchor="middle" fontSize="22" fill="#ec4899" fontFamily="serif">?</text>
+        <text x="100" y="30" textAnchor="middle" fontSize="22" fill="#3f7a5a" fontFamily="serif">?</text>
       </motion.g>
     </motion.svg>
   );

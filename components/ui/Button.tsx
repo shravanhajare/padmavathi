@@ -18,7 +18,7 @@ export type ButtonVariant = 'primary' | 'honey' | 'walnut' | 'outline' | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const base =
-  'group/btn relative isolate inline-flex select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full font-semibold tracking-[0.01em] transition-[box-shadow,background-color,border-color,color,filter] duration-300 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-55';
+  'group/btn relative isolate inline-flex select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full font-semibold tracking-[0.01em] transition-[box-shadow,background-color,background-position,border-color,color,filter] duration-300 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-55';
 
 const sizes: Record<ButtonSize, string> = {
   sm: 'h-9 px-4 text-[0.82rem]',
@@ -27,13 +27,12 @@ const sizes: Record<ButtonSize, string> = {
 };
 
 const variants: Record<ButtonVariant, string> = {
-  /** the mockup's pink pill with a honey-gold rim */
-  primary:
-    'text-[#3b1a0e] bg-[linear-gradient(135deg,#fcc2e0_0%,#f78fc6_50%,#ee6aad_100%)] shadow-[inset_0_0_0_2px_#d9a44e,inset_0_2px_0_2px_rgb(255_255_255/0.45),0_10px_28px_-10px_rgb(236_72_153/0.7)] hover:shadow-[inset_0_0_0_2px_#e8b865,inset_0_2px_0_2px_rgb(255_255_255/0.5),0_18px_40px_-12px_rgb(236_72_153/0.85)] hover:brightness-[1.04]',
-  honey:
-    'text-[#3a1f0c] bg-[linear-gradient(135deg,#f6d9a6_0%,#e2a867_45%,#c68642_100%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_10px_28px_-12px_rgb(198_134_66/0.85)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_18px_40px_-14px_rgb(198_134_66/0.95)] hover:brightness-[1.03]',
-  walnut:
-    'text-[#fff7e0] bg-[linear-gradient(180deg,#7a4f2e_0%,#5c3a21_100%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_8px_20px_-10px_rgb(92_58_33/0.8)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_14px_30px_-12px_rgb(92_58_33/0.9)] dark:text-[#3a1f0c] dark:bg-[linear-gradient(135deg,#f6d9a6_0%,#e2a867_45%,#c68642_100%)]',
+  /** oiled teak, turned and bevelled: the main call to action */
+  primary: 'btn-wood btn-wood-teak',
+  /** pale honey wood with dark lettering */
+  honey: 'btn-wood btn-wood-honey',
+  /** dark walnut; honey wood in the dark theme so it still stands out */
+  walnut: 'btn-wood btn-wood-walnut dark:btn-wood-honey',
   outline:
     'border border-line-strong bg-surface/70 text-fg backdrop-blur hover:border-honey hover:bg-surface hover:shadow-[0_10px_30px_-14px_rgb(var(--shadow-rgb)/0.35)]',
   ghost: 'text-fg hover:bg-surface-2',

@@ -68,7 +68,7 @@ function paletteFor(theme: SceneTheme): Palette {
     hemiSky: new THREE.Color(p.hemiSky),
     hemiGround: new THREE.Color(p.hemiGround),
     glow: new THREE.Color(p.glow),
-    mote: new THREE.Color(theme === 'light' ? '#ffd996' : '#ffb3d6'),
+    mote: new THREE.Color(theme === 'light' ? '#ffd996' : '#ffd9a0'),
     keyIntensity: p.keyIntensity * 0.7,
     rimIntensity: p.rimIntensity * 0.8,
     hemiIntensity: p.hemiIntensity * 0.85,
@@ -96,7 +96,7 @@ export class HeroWorld {
   readonly focus = new THREE.Vector3(0, 0, 0);
   readonly backdrop = new Backdrop();
   private readonly key = new THREE.DirectionalLight('#fff1dc', 1.6);
-  private readonly rim = new THREE.DirectionalLight('#ffc3d6', 0.8);
+  private readonly rim = new THREE.DirectionalLight('#ffdcb8', 0.8);
   private readonly hemi = new THREE.HemisphereLight('#fff6ea', '#e9b9a0', 0.3);
   private readonly glowLight = new THREE.PointLight('#ffc766', 0, 9, 2);
   private readonly motes: DustMotes;

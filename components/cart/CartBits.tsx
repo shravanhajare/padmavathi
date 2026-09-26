@@ -101,7 +101,7 @@ export function LineVariantSelect({ line }: { line: ResolvedLine }) {
       <select
         value={line.variantId}
         onChange={(e) => setVariant(line.key, e.target.value)}
-        className="h-8 max-w-full appearance-none truncate rounded-full border border-line bg-surface pl-3 pr-8 text-xs font-semibold text-fg outline-none focus:border-pink-strong"
+        className="h-8 max-w-full appearance-none truncate rounded-full border border-line bg-surface pl-3 pr-8 text-xs font-semibold text-fg outline-none focus:border-forest"
       >
         {product.variants.map((v) => (
           <option key={v.id} value={v.id}>
@@ -177,7 +177,7 @@ export function FreeDeliveryMeter({ totals }: { totals: Totals }) {
         aria-label="Progress towards free delivery"
       >
         <motion.div
-          className="h-full rounded-full bg-[linear-gradient(90deg,#ec4899,#c68642,#facc15)]"
+          className="h-full rounded-full bg-[linear-gradient(90deg,#3f7a5a,#c68642,#facc15)]"
           initial={false}
           animate={{ width: `${progress * 100}%` }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -249,7 +249,7 @@ export function Suggestions({ exclude, layout = 'grid', limit = 3 }: { exclude: 
               >
                 <span style={tintStyle(p)} className={cn('relative block aspect-square w-full overflow-hidden rounded-xl', tintClasses)}>
                   <Image src={p.image} alt="" fill sizes="96px" className="object-contain p-1 transition-transform group-hover:scale-105" />
-                  <span className="absolute bottom-1 right-1 grid h-6 w-6 place-items-center rounded-full bg-[#be185d] text-white shadow">
+                  <span className="absolute bottom-1 right-1 grid h-6 w-6 place-items-center rounded-full bg-[#2c5a42] text-white shadow">
                     <Plus size={14} />
                   </span>
                 </span>
@@ -276,7 +276,7 @@ export function Suggestions({ exclude, layout = 'grid', limit = 3 }: { exclude: 
                 type="button"
                 onClick={() => addOne(p.id)}
                 aria-label={`Add ${p.name} to cart`}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,#fcc2e0,#f78fc6_55%,#ee6aad)] text-[#3b1a0e] shadow-[inset_0_0_0_1.5px_#d9a44e] transition-transform hover:scale-105"
+                className="grid h-9 w-9 shrink-0 place-items-center btn-wood btn-wood-teak rounded-full hover:scale-105"
               >
                 <Plus size={16} />
               </button>

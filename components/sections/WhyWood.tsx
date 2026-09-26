@@ -21,7 +21,7 @@ const ICONS: Record<string, ReactNode> = {
     <Icon>
       <motion.path variants={draw} d="M18 6h12M20 6v12L10 38a4 4 0 0 0 3.6 6h20.8a4 4 0 0 0 3.6-6L28 18V6" />
       <motion.path variants={draw} d="M14 30h20" />
-      <motion.path variants={{ rest: { pathLength: 0 }, show: { pathLength: 1, transition: { delay: 0.6, duration: 0.5 } } }} d="M6 6 L42 42" stroke="#ec4899" strokeWidth="3" />
+      <motion.path variants={{ rest: { pathLength: 0 }, show: { pathLength: 1, transition: { delay: 0.6, duration: 0.5 } } }} d="M6 6 L42 42" stroke="#3f7a5a" strokeWidth="3" />
     </Icon>
   ),
   food: (
@@ -126,7 +126,7 @@ export function WhyWood() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[#f1c48d]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#f9a8d4]" aria-hidden="true" /> Why wood
+            <span className="h-1.5 w-1.5 rounded-full bg-[#b9d3b1]" aria-hidden="true" /> Why wood
           </motion.span>
           <h2 id="why-title" className="max-w-3xl text-[2.25rem] font-semibold leading-[1.06] sm:text-5xl lg:text-[3.5rem]">
             <SplitReveal text="Better for your food," /> <SplitReveal text="your pans and the planet" delay={0.2} wordClassName="italic text-[#f1c48d] pr-1" />
@@ -152,7 +152,7 @@ export function WhyWood() {
                 style={{ transformPerspective: 900 }}
                 className="relative h-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-7 backdrop-blur transition-[border-color,background-color,transform] duration-500 hover:-translate-y-1.5 hover:border-[#e2a867]/50 hover:bg-white/[0.07]"
               >
-                <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgb(236_72_153/0.25),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true" />
+                <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgb(63_122_90/0.25),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true" />
                 <span className="grid h-16 w-16 place-items-center rounded-2xl bg-[linear-gradient(135deg,rgb(233_184_119/0.25),rgb(198_134_66/0.08))] text-[#f1c48d] ring-1 ring-[#e2a867]/30">
                   {ICONS[r.id]}
                 </span>

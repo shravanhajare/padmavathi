@@ -144,7 +144,7 @@ export function createTagTexture() {
   ctx.lineWidth = 3;
   ctx.strokeRect(16, 16, w - 32, h - 32);
   ctx.setLineDash([]);
-  drawLotusMark(ctx, w / 2, 150, 120, '#5c3a21', '#ec4899');
+  drawLotusMark(ctx, w / 2, 150, 120, '#5c3a21', '#3f7a5a');
   ctx.fillStyle = '#5c3a21';
   ctx.textAlign = 'center';
   ctx.font = `700 34px ${displayFontFamily()}`;

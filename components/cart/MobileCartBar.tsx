@@ -67,9 +67,9 @@ export function MobileCartBar() {
             type="button"
             onClick={openCart}
             aria-label={`Open cart: ${pluralize(count, 'piece')}, ${amount}`}
-            className="flex h-[3.75rem] w-full items-center gap-3 rounded-2xl bg-[linear-gradient(135deg,#fcc2e0,#f78fc6_55%,#ee6aad)] pl-2 pr-4 text-left text-[#3b1a0e] shadow-[inset_0_0_0_2px_#d9a44e,0_18px_40px_-14px_rgb(236_72_153/0.7)] transition-transform active:scale-[0.98]"
+            className="flex h-[3.75rem] w-full items-center gap-3 btn-wood btn-wood-teak rounded-2xl pl-2 pr-4 text-left active:scale-[0.98]"
           >
-            <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/40">
+            <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#fff1d6]/15 ring-1 ring-inset ring-[#fff1d6]/25">
               <ShoppingCart size={20} aria-hidden="true" />
               <motion.span
                 key={count}
@@ -83,7 +83,7 @@ export function MobileCartBar() {
               </motion.span>
             </span>
             <span className="min-w-0 flex-1 leading-tight">
-              <span className="block truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#3b1a0e]/70">Your cart</span>
+              <span className="block truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#fff4e2]/75">Your cart</span>
               <span className="block truncate text-[0.95rem] font-semibold tabular-nums">{pluralize(count, 'piece')} · {amount}</span>
             </span>
             <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold">

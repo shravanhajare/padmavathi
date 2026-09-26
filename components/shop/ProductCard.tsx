@@ -42,14 +42,14 @@ function CartControl({
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 460, damping: 26 }}
-            className="group/add relative inline-flex h-10 w-full items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#fcc2e0,#f78fc6_55%,#ee6aad)] pl-1.5 pr-4 text-sm font-semibold text-[#3b1a0e] shadow-[inset_0_0_0_2px_#d9a44e,0_10px_24px_-10px_rgb(236_72_153/0.8)] @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:justify-start"
+            className="group/add relative inline-flex h-10 w-full items-center justify-center gap-2 overflow-hidden whitespace-nowrap btn-wood btn-wood-teak rounded-full pl-1.5 pr-4 text-sm font-semibold @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:justify-start"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-white/45 transition-transform duration-300 group-hover/add:-rotate-12 group-hover/add:scale-110 @min-[15rem]:h-8 @min-[15rem]:w-8">
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-[#fff1d6]/15 ring-1 ring-inset ring-[#fff1d6]/25 transition-transform duration-300 group-hover/add:-rotate-12 group-hover/add:scale-110 @min-[15rem]:h-8 @min-[15rem]:w-8">
               <ShoppingCart size={15} aria-hidden="true" />
             </span>
             <span className="@min-[19rem]:hidden">Add</span>
             <span className="hidden @min-[19rem]:inline">Add to cart</span>
-            <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/40 blur-md transition-all duration-700 group-hover/add:left-[130%]" aria-hidden="true" />
+            <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/25 blur-md transition-all duration-700 group-hover/add:left-[130%]" aria-hidden="true" />
           </motion.button>
         ) : (
           <motion.div
@@ -58,7 +58,7 @@ function CartControl({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.7 }}
             transition={{ type: 'spring', stiffness: 460, damping: 26 }}
-            className="inline-flex h-10 w-full items-center justify-between rounded-full bg-[linear-gradient(135deg,#f6d9a6,#e2a867)] p-1 text-[#3a1f0c] shadow-[0_10px_24px_-12px_rgb(198_134_66/0.9)] @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:min-w-[8.2rem]"
+            className="inline-flex h-10 w-full items-center justify-between btn-wood btn-wood-honey rounded-full p-1 @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:min-w-[8.2rem]"
             role="group"
             aria-label={`${product.name}, ${variant.label}: ${qty} in cart`}
           >
@@ -67,7 +67,7 @@ function CartControl({
               whileTap={{ scale: 0.85 }}
               onClick={() => setQty(key, qty - 1)}
               aria-label={qty === 1 ? `Remove ${product.name} from cart` : `Remove one ${product.name}`}
-              className="grid h-8 w-8 place-items-center rounded-full bg-white/60 hover:bg-white @min-[15rem]:h-9 @min-[15rem]:w-9"
+              className="grid h-8 w-8 place-items-center rounded-full bg-[#fff8ea]/55 [text-shadow:none] hover:bg-[#fff8ea] @min-[15rem]:h-9 @min-[15rem]:w-9"
             >
               <Minus size={15} />
             </motion.button>
@@ -90,7 +90,7 @@ function CartControl({
               whileTap={{ scale: 0.85 }}
               onClick={() => onAdd(variantId, 1, sourceRef.current)}
               aria-label={`Add one more ${product.name}`}
-              className="grid h-8 w-8 place-items-center rounded-full bg-[#be185d] text-white hover:bg-[#9d174d] @min-[15rem]:h-9 @min-[15rem]:w-9"
+              className="grid h-8 w-8 place-items-center btn-wood btn-wood-teak rounded-full @min-[15rem]:h-9 @min-[15rem]:w-9"
             >
               <Plus size={15} />
             </motion.button>
@@ -204,7 +204,7 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
               {pulse > 0 && (
                 <motion.span
                   key={pulse}
-                  className="pointer-events-none absolute inset-0 z-30 rounded-[1.1rem] border-2 border-[#ec4899] @min-[15rem]:rounded-[1.5rem]"
+                  className="pointer-events-none absolute inset-0 z-30 rounded-[1.1rem] border-2 border-[#3f7a5a] @min-[15rem]:rounded-[1.5rem]"
                   initial={{ opacity: 0.9, scale: 1 }}
                   animate={{ opacity: 0, scale: 1.06 }}
                   transition={{ duration: 0.7, ease: 'easeOut' }}
@@ -215,7 +215,7 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
               {pulse > 0 && (
                 <motion.span
                   key={`plus-${pulse}`}
-                  className="pointer-events-none absolute left-1/2 top-1/3 z-30 -translate-x-1/2 font-display text-3xl font-bold text-[#be185d] drop-shadow"
+                  className="pointer-events-none absolute left-1/2 top-1/3 z-30 -translate-x-1/2 font-display text-3xl font-bold text-[#2c5a42] drop-shadow"
                   initial={{ opacity: 0, y: 10, scale: 0.6 }}
                   animate={{ opacity: [0, 1, 0], y: -50, scale: 1.1 }}
                   transition={{ duration: 0.9, ease: 'easeOut' }}

@@ -20,8 +20,8 @@ export function LogoMark({ className, title }: { className?: string; title?: str
           <stop offset="1" stopColor="#5c3a21" />
         </linearGradient>
         <radialGradient id={`${id}-p`} cx="0.4" cy="0.35" r="0.7">
-          <stop offset="0" stopColor="#fcd1e6" />
-          <stop offset="1" stopColor="#ec4899" />
+          <stop offset="0" stopColor="#d4e6cc" />
+          <stop offset="1" stopColor="#3f7a5a" />
         </radialGradient>
       </defs>
       {/* side petals: spoons fanned out from the base */}
@@ -37,7 +37,7 @@ export function LogoMark({ className, title }: { className?: string; title?: str
       <ellipse cx="24" cy="10.6" rx="6" ry="8.6" fill={`url(#${id}-w)`} />
       <ellipse cx="24" cy="9.6" rx="3.4" ry="5.6" fill="#fff3dc" opacity="0.3" />
       {/* lotus base */}
-      <path d="M10 38.5c4.6 4.2 9.3 5.6 14 5.6s9.4-1.4 14-5.6" fill="none" stroke="#ec4899" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M10 38.5c4.6 4.2 9.3 5.6 14 5.6s9.4-1.4 14-5.6" fill="none" stroke="#3f7a5a" strokeWidth="2.4" strokeLinecap="round" />
       <circle cx="24" cy="38.2" r="3.4" fill={`url(#${id}-p)`} />
     </svg>
   );

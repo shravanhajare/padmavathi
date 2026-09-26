@@ -82,7 +82,7 @@ function FlyingItem({ flyer, onLand }: { flyer: Flyer; onLand: () => void }) {
   );
 }
 
-const CONFETTI = ['#ec4899', '#facc15', '#f9a8d4', '#c68642', '#e9b877'];
+const CONFETTI = ['#3f7a5a', '#facc15', '#b9d3b1', '#c68642', '#e9b877'];
 
 /** Ring + a burst of wood-shaving curls and confetti + "+1" from the cart when an item lands. */
 function LandingBurst({ at, onDone }: { at: { x: number; y: number }; onDone: () => void }) {
@@ -102,7 +102,7 @@ function LandingBurst({ at, onDone }: { at: { x: number; y: number }; onDone: ()
   return (
     <div className="fixed left-0 top-0" style={{ transform: `translate(${at.x}px, ${at.y}px)` }} aria-hidden="true">
       <motion.span
-        className="absolute -left-6 -top-6 h-12 w-12 rounded-full border-2 border-[#ec4899]"
+        className="absolute -left-6 -top-6 h-12 w-12 rounded-full border-2 border-[#3f7a5a]"
         initial={{ scale: 0.4, opacity: 0.9 }}
         animate={{ scale: 2.3, opacity: 0 }}
         transition={{ duration: 0.65, ease: 'easeOut' }}
@@ -131,7 +131,7 @@ function LandingBurst({ at, onDone }: { at: { x: number; y: number }; onDone: ()
         ),
       )}
       <motion.span
-        className="absolute -left-4 top-5 font-display text-xl font-bold text-[#be185d] dark:text-[#f9a8d4]"
+        className="absolute -left-4 top-5 font-display text-xl font-bold text-[#2c5a42] dark:text-[#b9d3b1]"
         initial={{ y: 0, opacity: 0, scale: 0.6 }}
         animate={{ y: 18, opacity: [0, 1, 0], scale: 1.1 }}
         transition={{ duration: 0.85, ease: 'easeOut' }}
@@ -179,7 +179,7 @@ function ToastCard({ toast }: { toast: CartToast }) {
             dismiss(toast.id);
             openCart();
           }}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#fcc2e0,#f78fc6_55%,#ee6aad)] px-3 py-2 text-xs font-semibold text-[#3b1a0e] shadow-[inset_0_0_0_1.5px_#d9a44e]"
+          className="inline-flex shrink-0 items-center gap-1.5 btn-wood btn-wood-teak rounded-full px-3 py-2 text-xs font-semibold"
         >
           <ShoppingCart size={13} aria-hidden="true" /> View cart
         </button>
@@ -193,7 +193,7 @@ function ToastCard({ toast }: { toast: CartToast }) {
         <X size={13} />
       </button>
       <motion.span
-        className="absolute bottom-0 left-0 h-[3px] bg-[linear-gradient(90deg,#ec4899,#c68642,#facc15)]"
+        className="absolute bottom-0 left-0 h-[3px] bg-[linear-gradient(90deg,#3f7a5a,#c68642,#facc15)]"
         initial={{ width: '100%' }}
         animate={{ width: paused ? '100%' : '0%' }}
         transition={{ duration: paused ? 0.25 : 3.4, ease: paused ? 'easeOut' : 'linear' }}

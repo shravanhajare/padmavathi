@@ -32,13 +32,13 @@ export const CATEGORIES: Category[] = [
     id: 'spatulas',
     label: 'Spatulas & Ladles',
     short: 'Spatulas',
-    tint: { light: ['#fff4e8', '#fbd3c4'], dark: ['#3f2520', '#211311'] },
+    tint: { light: ['#fff6e8', '#f3d8b6'], dark: ['#3f2a1c', '#21160f'] },
   },
   {
     id: 'spoons',
     label: 'Spoons',
     short: 'Spoons',
-    tint: { light: ['#fff5ea', '#fbd6d8'], dark: ['#3f2429', '#221315'] },
+    tint: { light: ['#f8f9ee', '#dde7cb'], dark: ['#26311f', '#141a11'] },
   },
   {
     id: 'boards',
@@ -56,13 +56,13 @@ export const CATEGORIES: Category[] = [
     id: 'mortar',
     label: 'Mortar & Pestle',
     short: 'Mortar',
-    tint: { light: ['#fbf3ea', '#ebd3c3'], dark: ['#35241f', '#1c1311'] },
+    tint: { light: ['#fbf5ea', '#e8d6bd'], dark: ['#35281c', '#1c1510'] },
   },
   {
     id: 'gifts',
     label: 'Gift Sets',
     short: 'Gifts',
-    tint: { light: ['#fff1f5', '#fbcfdc'], dark: ['#43202f', '#24111a'] },
+    tint: { light: ['#f3f8ec', '#dde9cf'], dark: ['#1f3326', '#121c16'] },
   },
 ];
 

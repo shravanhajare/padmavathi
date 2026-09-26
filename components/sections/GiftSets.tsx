@@ -38,16 +38,16 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
       aria-labelledby={`gift-${product.id}`}
     >
       <svg viewBox="0 0 80 40" className="absolute -top-5 left-1/2 z-30 h-10 w-20 -translate-x-1/2 drop-shadow transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3" aria-hidden="true">
-        <path d="M40 20 C 26 2, 6 6, 12 20 C 16 30, 30 26, 40 20 Z" fill="#ec4899" />
-        <path d="M40 20 C 54 2, 74 6, 68 20 C 64 30, 50 26, 40 20 Z" fill="#ec4899" />
-        <path d="M40 20 C 30 12, 18 12, 20 20" fill="none" stroke="#fbcfe8" strokeWidth="2" />
-        <path d="M40 20 C 50 12, 62 12, 60 20" fill="none" stroke="#fbcfe8" strokeWidth="2" />
-        <circle cx="40" cy="20" r="6" fill="#be185d" />
+        <path d="M40 20 C 26 2, 6 6, 12 20 C 16 30, 30 26, 40 20 Z" fill="#3f7a5a" />
+        <path d="M40 20 C 54 2, 74 6, 68 20 C 64 30, 50 26, 40 20 Z" fill="#3f7a5a" />
+        <path d="M40 20 C 30 12, 18 12, 20 20" fill="none" stroke="#d7e8d0" strokeWidth="2" />
+        <path d="M40 20 C 50 12, 62 12, 60 20" fill="none" stroke="#d7e8d0" strokeWidth="2" />
+        <circle cx="40" cy="20" r="6" fill="#2c5a42" />
       </svg>
       <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-line bg-card shadow-soft transition-[transform,box-shadow] duration-500 group-hover:-translate-y-2 group-hover:shadow-lift">
         {/* the ribbon the bow is tied on */}
-        <span className="absolute inset-x-0 top-0 z-40 h-2.5 bg-[linear-gradient(180deg,#f9a8d4,#ec4899)]" aria-hidden="true" />
-        <div ref={imgRef} className="relative aspect-[5/4] overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#fff1f5,#fbcfdc)] dark:bg-[radial-gradient(circle_at_50%_40%,#43202f,#24111a)]">
+        <span className="absolute inset-x-0 top-0 z-40 h-2.5 bg-[linear-gradient(180deg,#b9d3b1,#3f7a5a)]" aria-hidden="true" />
+        <div ref={imgRef} className="relative aspect-[5/4] overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#f3f8ec,#dde9cf)] dark:bg-[radial-gradient(circle_at_50%_40%,#1f3326,#121c16)]">
           <Kolam draw={false} className="absolute left-1/2 top-1/2 h-[125%] w-[125%] -translate-x-1/2 -translate-y-1/2 text-white/60 transition-transform duration-[2400ms] group-hover:rotate-45 dark:text-white/[0.06]" />
           <Image
             src={product.image}
@@ -106,8 +106,8 @@ export function GiftSets() {
   const gifts = products.filter((p) => p.category === 'gifts');
   return (
     <section id="gift-sets" aria-labelledby="gifts-title" className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgb(249_168_212/0.14)_30%,rgb(250_204_21/0.08)_70%,transparent)]" aria-hidden="true" />
-      <Kolam className="absolute -right-44 top-16 h-[32rem] w-[32rem] text-pink-strong/[0.09]" spin />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgb(185_211_177/0.14)_30%,rgb(250_204_21/0.08)_70%,transparent)]" aria-hidden="true" />
+      <Kolam className="absolute -right-44 top-16 h-[32rem] w-[32rem] text-forest/[0.09]" spin />
       <div className="container-page relative">
         <SectionHeading
           id="gifts-title"

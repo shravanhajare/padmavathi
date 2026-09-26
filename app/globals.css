@@ -17,10 +17,10 @@
   --border: rgb(92 58 33 / 0.14);
   --border-strong: rgb(92 58 33 / 0.26);
 
-  /* brand */
-  --pink: #f9a8d4;
-  --pink-strong: #ec4899;
-  --pink-deep: #be185d;
+  /* brand: forest green against wood and cream */
+  --sage: #b9d3b1;
+  --forest: #3f7a5a;
+  --forest-deep: #2c5a42;
   --marigold: #facc15;
   --marigold-deep: #d49a06;
   --cream: #fff7e0;
@@ -34,12 +34,12 @@
   --leaf: #2f7d3a;
 
   /* text-safe accent (AA on --bg) and its foreground */
-  --accent: #be185d;
+  --accent: #2c5a42;
   --accent-fg: #ffffff;
   --wood-text: #8a4a24;
 
   --shadow-rgb: 92 58 33;
-  --glow-rgb: 236 72 153;
+  --glow-rgb: 63 122 90;
   --hero-a: #fff4df;
   --hero-b: #f9dfc2;
   --grain-opacity: 0.04;
@@ -53,12 +53,12 @@
   --card: rgb(36 26 19 / 0.86);
   --fg: #fbefe1;
   --fg-muted: #cdb59e;
-  --border: rgb(249 168 212 / 0.13);
-  --border-strong: rgb(249 168 212 / 0.25);
+  --border: rgb(226 168 103 / 0.14);
+  --border-strong: rgb(226 168 103 / 0.27);
 
-  --pink: #f9a8d4;
-  --pink-strong: #f472b6;
-  --pink-deep: #f9a8d4;
+  --sage: #9cc5a6;
+  --forest: #7fbf95;
+  --forest-deep: #a8d8b5;
   --marigold: #fcd34d;
   --marigold-deep: #fcd34d;
   --cream: #2a1f16;
@@ -70,12 +70,12 @@
   --gold: #f0c16a;
   --leaf: #6fcf7c;
 
-  --accent: #f9a8d4;
-  --accent-fg: #2a0f1f;
+  --accent: #a8d8b5;
+  --accent-fg: #10261a;
   --wood-text: #f1c48d;
 
   --shadow-rgb: 0 0 0;
-  --glow-rgb: 244 114 182;
+  --glow-rgb: 127 191 149;
   --hero-a: #241811;
   --hero-b: #120d0a;
   --grain-opacity: 0.06;
@@ -91,9 +91,9 @@
   --color-muted: var(--fg-muted);
   --color-line: var(--border);
   --color-line-strong: var(--border-strong);
-  --color-pink: var(--pink);
-  --color-pink-strong: var(--pink-strong);
-  --color-pink-deep: var(--pink-deep);
+  --color-sage: var(--sage);
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
   --color-marigold: var(--marigold);
   --color-marigold-deep: var(--marigold-deep);
   --color-cream: var(--cream);
@@ -179,11 +179,11 @@
     text-wrap: pretty;
   }
   ::selection {
-    background: var(--pink);
+    background: var(--sage);
     color: #2e1d12;
   }
   :focus-visible {
-    outline: 2.5px solid var(--pink-strong);
+    outline: 2.5px solid var(--forest);
     outline-offset: 3px;
     border-radius: 6px;
   }
@@ -247,13 +247,13 @@ body::after {
   }
 }
 
-@utility text-gradient-pink {
-  background: linear-gradient(100deg, #be185d 0%, #ec4899 45%, #c68642 100%);
+@utility text-gradient-forest {
+  background: linear-gradient(100deg, #2c5a42 0%, #3f7a5a 45%, #c68642 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   [data-theme='dark'] & {
-    background-image: linear-gradient(100deg, #f9a8d4 0%, #f472b6 45%, #fcd34d 100%);
+    background-image: linear-gradient(100deg, #a8d8b5 0%, #7fbf95 45%, #fcd34d 100%);
   }
 }
 
@@ -297,6 +297,83 @@ body::after {
 @utility wood-grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0 0.12 0 0 0 1.1 -0.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 600px 240px;
+}
+
+/* ───────────────────────── Wooden buttons ─────────────────────────
+   Pills that look turned from solid wood: long grain (stretched fractal noise),
+   a rounded bevel catching the light, a darker rim and lettering pressed into
+   the surface. A species utility (btn-wood-teak/-honey/-walnut) sets the
+   colours; btn-wood draws the piece. */
+@utility btn-wood {
+  color: var(--wood-ink, #fff4e2);
+  text-shadow: 0 1px 0 var(--wood-ink-shadow, rgb(52 24 8 / 0.6));
+  background-color: var(--wood-2);
+  background-image:
+    linear-gradient(180deg, rgb(255 244 222 / 0.26) 0%, rgb(255 244 222 / 0.05) 34%, transparent 50%, rgb(40 16 4 / 0.2) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='84'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.5' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.22 0 0 0 0 0.1 0 0 0 0 0.03 0 0 0 2.6 -1.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3Cg fill='none' stroke='%233a1806' stroke-linecap='round'%3E%3Cpath d='M-10 1.5 C 90 0.4, 190 2.6, 290 -0.6 S 430 1.5 430 1.5' stroke-width='0.5' stroke-opacity='0.18'/%3E%3Cpath d='M-10 6.0 C 90 5.2, 190 6.8, 290 3.4 S 430 6.0 430 6.0' stroke-width='1.4' stroke-opacity='0.22'/%3E%3Cpath d='M-10 8.6 C 90 8.1, 190 9.1, 290 7.0 S 430 8.6 430 8.6' stroke-width='1.4' stroke-opacity='0.27'/%3E%3Cpath d='M-10 14.3 C 90 12.1, 190 16.6, 290 12.7 S 430 14.3 430 14.3' stroke-width='1.4' stroke-opacity='0.41'/%3E%3Cpath d='M-10 19.0 C 90 18.4, 190 19.6, 290 21.9 S 430 19.0 430 19.0' stroke-width='0.5' stroke-opacity='0.30'/%3E%3Cpath d='M-10 21.8 C 90 21.3, 190 22.3, 290 22.0 S 430 21.8 430 21.8' stroke-width='1.4' stroke-opacity='0.24'/%3E%3Cpath d='M-10 27.5 C 90 25.6, 190 29.4, 290 28.0 S 430 27.5 430 27.5' stroke-width='0.6' stroke-opacity='0.26'/%3E%3Cpath d='M-10 32.0 C 90 29.4, 190 34.7, 290 29.4 S 430 32.0 430 32.0' stroke-width='0.6' stroke-opacity='0.29'/%3E%3Cpath d='M-10 36.5 C 90 38.2, 190 34.9, 290 36.3 S 430 36.5 430 36.5' stroke-width='1.0' stroke-opacity='0.25'/%3E%3Cpath d='M-10 39.8 C 90 37.9, 190 41.7, 290 41.5 S 430 39.8 430 39.8' stroke-width='0.5' stroke-opacity='0.31'/%3E%3Cpath d='M-10 44.3 C 90 46.5, 190 42.0, 290 45.6 S 430 44.3 430 44.3' stroke-width='0.8' stroke-opacity='0.32'/%3E%3Cpath d='M-10 46.8 C 90 46.8, 190 46.7, 290 44.8 S 430 46.8 430 46.8' stroke-width='0.8' stroke-opacity='0.20'/%3E%3Cpath d='M-10 51.1 C 90 48.3, 190 53.8, 290 52.1 S 430 51.1 430 51.1' stroke-width='1.4' stroke-opacity='0.31'/%3E%3Cpath d='M-10 57.0 C 90 55.9, 190 58.2, 290 58.2 S 430 57.0 430 57.0' stroke-width='1.4' stroke-opacity='0.29'/%3E%3Cpath d='M-10 62.7 C 90 60.1, 190 65.3, 290 60.2 S 430 62.7 430 62.7' stroke-width='0.8' stroke-opacity='0.28'/%3E%3Cpath d='M-10 67.7 C 90 65.1, 190 70.4, 290 68.9 S 430 67.7 430 67.7' stroke-width='1.4' stroke-opacity='0.42'/%3E%3Cpath d='M-10 73.5 C 90 72.2, 190 74.8, 290 72.8 S 430 73.5 430 73.5' stroke-width='0.8' stroke-opacity='0.17'/%3E%3Cpath d='M-10 77.6 C 90 75.7, 190 79.6, 290 75.3 S 430 77.6 430 77.6' stroke-width='0.5' stroke-opacity='0.22'/%3E%3Cpath d='M-10 81.1 C 90 82.5, 190 79.7, 290 80.5 S 430 81.1 430 81.1' stroke-width='1.0' stroke-opacity='0.18'/%3E%3Cpath d='M430 38 Q 162 42 430 46' stroke-width='1' stroke-opacity='0.35'/%3E%3Cpath d='M430 34 Q 174 42 430 50' stroke-width='1' stroke-opacity='0.3'/%3E%3Cpath d='M430 29.5 Q 187.5 42 430 54.5' stroke-width='1' stroke-opacity='0.26'/%3E%3Cpath d='M430 25 Q 201 42 430 59' stroke-width='1' stroke-opacity='0.22'/%3E%3Cpath d='M430 20 Q 216 42 430 64' stroke-width='1' stroke-opacity='0.18'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(100deg, var(--wood-1) 0%, var(--wood-3) 24%, var(--wood-2) 52%, var(--wood-1) 76%, var(--wood-3) 100%);
+  background-size:
+    100% 100%,
+    420px 84px,
+    100% 100%;
+  background-position:
+    0 0,
+    0 50%,
+    0 0;
+  box-shadow:
+    inset 0 0 0 1.5px var(--wood-rim),
+    inset 0 2px 1px 1px rgb(255 240 214 / 0.34),
+    inset 0 -3px 3px -1px rgb(46 20 6 / 0.34),
+    0 10px 22px -10px rgb(70 38 14 / 0.75);
+  transition:
+    filter 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease,
+    background-position 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  /* only real controls react; a wooden panel (e.g. a quantity stepper) stays still */
+  &:is(a, button):hover {
+    filter: brightness(1.08) saturate(1.06);
+    background-position:
+      0 0,
+      -48px 50%,
+      0 0;
+    box-shadow:
+      inset 0 0 0 1.5px var(--wood-rim),
+      inset 0 2px 1px 1px rgb(255 240 214 / 0.4),
+      inset 0 -3px 3px -1px rgb(46 20 6 / 0.34),
+      0 0 0 3px rgb(198 134 66 / 0.22),
+      0 16px 30px -12px rgb(70 38 14 / 0.85);
+  }
+  [data-theme='dark'] & {
+    box-shadow:
+      inset 0 0 0 1.5px var(--wood-rim),
+      inset 0 2px 1px 1px rgb(255 240 214 / 0.3),
+      inset 0 -3px 3px -1px rgb(20 8 2 / 0.45),
+      0 10px 24px -8px rgb(0 0 0 / 0.7);
+  }
+}
+/* oiled teak: the main call to action */
+@utility btn-wood-teak {
+  --wood-1: #8e4d22;
+  --wood-2: #7a3f19;
+  --wood-3: #a8622e;
+  --wood-rim: #5a3015;
+}
+/* pale honey neem, dark lettering */
+@utility btn-wood-honey {
+  --wood-1: #dcae72;
+  --wood-2: #c8914f;
+  --wood-3: #ecc88f;
+  --wood-rim: #9c6a35;
+  --wood-ink: #3a1f0c;
+  --wood-ink-shadow: rgb(255 240 210 / 0.55);
+}
+/* dark walnut */
+@utility btn-wood-walnut {
+  --wood-1: #5a3720;
+  --wood-2: #482b17;
+  --wood-3: #6f4629;
+  --wood-rim: #2e1a0c;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -382,12 +459,12 @@ body::after {
 /* hover only where there is a real pointer, so a tap on a phone doesn't leave the border spinning */
 @media (hover: hover) {
   .pe-card:hover {
-    background: conic-gradient(from var(--pe-angle), rgb(236 72 153 / 0.25), #e9c38f, #ec4899, #facc15, #c68642, rgb(236 72 153 / 0.25));
+    background: conic-gradient(from var(--pe-angle), rgb(63 122 90 / 0.25), #e9c38f, #3f7a5a, #facc15, #c68642, rgb(63 122 90 / 0.25));
     animation: pe-border-spin 3.5s linear infinite;
   }
 }
 .pe-card:has(:focus-visible) {
-  background: conic-gradient(from var(--pe-angle), rgb(236 72 153 / 0.25), #e9c38f, #ec4899, #facc15, #c68642, rgb(236 72 153 / 0.25));
+  background: conic-gradient(from var(--pe-angle), rgb(63 122 90 / 0.25), #e9c38f, #3f7a5a, #facc15, #c68642, rgb(63 122 90 / 0.25));
   animation: pe-border-spin 3.5s linear infinite;
 }
 @keyframes pe-border-spin {

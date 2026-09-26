@@ -8,6 +8,6 @@
   <g transform="rotate(40 24 38)"><rect x="22.6" y="17" width="2.8" height="21" rx="1.4" fill="url(#d)"/><ellipse cx="24" cy="13.2" rx="5.2" ry="7.6" fill="url(#w)"/></g>
   <rect x="22.4" y="15" width="3.2" height="24" rx="1.6" fill="url(#d)"/>
   <ellipse cx="24" cy="10.6" rx="6" ry="8.6" fill="url(#w)"/>
-  <path d="M10 38.5c4.6 4.2 9.3 5.6 14 5.6s9.4-1.4 14-5.6" fill="none" stroke="#ec4899" stroke-width="2.4" stroke-linecap="round"/>
-  <circle cx="24" cy="38.2" r="3.4" fill="#ec4899"/>
+  <path d="M10 38.5c4.6 4.2 9.3 5.6 14 5.6s9.4-1.4 14-5.6" fill="none" stroke="#3f7a5a" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="24" cy="38.2" r="3.4" fill="#3f7a5a"/>
 </svg>

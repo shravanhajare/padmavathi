@@ -67,7 +67,7 @@ function CategoryTabs({ value, onChange, counts }: { value: Category['id']; onCh
                 <span
                   className={cn(
                     'rounded-full px-1.5 text-[0.64rem] font-semibold tabular-nums transition-colors',
-                    active ? 'bg-pink/45 text-pink-deep dark:bg-pink-strong/25' : 'bg-line text-muted',
+                    active ? 'bg-sage/45 text-forest-deep dark:bg-forest/25' : 'bg-line text-muted',
                   )}
                 >
                   {counts[c.id] ?? 0}
@@ -76,7 +76,7 @@ function CategoryTabs({ value, onChange, counts }: { value: Category['id']; onCh
               {active && (
                 <motion.span
                   layoutId="shop-tab-line"
-                  className="absolute inset-x-5 -bottom-[3px] h-[2.5px] rounded-full bg-[linear-gradient(90deg,#ec4899,#c68642)]"
+                  className="absolute inset-x-5 -bottom-[3px] h-[2.5px] rounded-full bg-[linear-gradient(90deg,#3f7a5a,#c68642)]"
                   transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                 />
               )}
@@ -172,7 +172,7 @@ export function Shop() {
   return (
     <section id="shop" aria-labelledby="shop-title" className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32">
       <Kolam className="absolute -left-52 top-28 h-[36rem] w-[36rem] text-honey/15" spin />
-      <Kolam className="absolute -right-60 bottom-10 h-[40rem] w-[40rem] text-pink-strong/[0.07]" petals={16} />
+      <Kolam className="absolute -right-60 bottom-10 h-[40rem] w-[40rem] text-forest/[0.07]" petals={16} />
       <WoodShaving className="absolute right-[8%] top-40 h-12 w-14 animate-sway opacity-70" />
       <div className="container-page relative">
         <SectionHeading
@@ -194,7 +194,7 @@ export function Shop() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search belan, mathani, teak…"
-                className="h-full w-full rounded-full border border-line-strong bg-surface/80 pl-11 pr-11 text-[0.95rem] text-fg shadow-soft outline-none backdrop-blur transition-[border-color,box-shadow] placeholder:text-muted/70 focus:border-pink-strong focus:shadow-[0_0_0_4px_rgb(236_72_153/0.15)]"
+                className="h-full w-full rounded-full border border-line-strong bg-surface/80 pl-11 pr-11 text-[0.95rem] text-fg shadow-soft outline-none backdrop-blur transition-[border-color,box-shadow] placeholder:text-muted/70 focus:border-forest focus:shadow-[0_0_0_4px_rgb(63_122_90/0.15)]"
               />
               {query && (
                 <button
@@ -214,7 +214,7 @@ export function Shop() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="h-full w-full appearance-none rounded-full border border-line-strong bg-surface/80 pl-10 pr-6 text-sm font-medium text-fg shadow-soft outline-none backdrop-blur focus:border-pink-strong lg:w-auto"
+                className="h-full w-full appearance-none rounded-full border border-line-strong bg-surface/80 pl-10 pr-6 text-sm font-medium text-fg shadow-soft outline-none backdrop-blur focus:border-forest lg:w-auto"
               >
                 {SORTS.map((s) => (
                   <option key={s.id} value={s.id}>

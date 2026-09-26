@@ -72,7 +72,7 @@ export function SectionHeading({
         transition={{ duration: 0.7, ease: EASE }}
         className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/70 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-wood backdrop-blur"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-pink-strong" aria-hidden="true" />
+        <span className="h-1.5 w-1.5 rounded-full bg-forest" aria-hidden="true" />
         {eyebrow}
       </motion.span>
       <h2 id={id} className="max-w-3xl text-[2.25rem] font-semibold leading-[1.06] text-fg sm:text-5xl lg:text-[3.5rem]">

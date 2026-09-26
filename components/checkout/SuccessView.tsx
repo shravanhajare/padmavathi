@@ -31,7 +31,7 @@ function Tick() {
         variants={{ hidden: { scale: 0 }, shown: { scale: 1, transition: { type: 'spring', stiffness: 260, damping: 16 } } }}
         style={{ originX: '50%', originY: '50%' }}
       />
-      <motion.circle cx="40" cy="40" r="36" fill="none" stroke="#ec4899" strokeWidth="2" variants={{ hidden: { pathLength: 0 }, shown: { pathLength: 1, transition: { delay: 0.2, duration: 0.8 } } }} />
+      <motion.circle cx="40" cy="40" r="36" fill="none" stroke="#3f7a5a" strokeWidth="2" variants={{ hidden: { pathLength: 0 }, shown: { pathLength: 1, transition: { delay: 0.2, duration: 0.8 } } }} />
       <motion.path
         d="M24 41 L35 52 L57 29"
         fill="none"

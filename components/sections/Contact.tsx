@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const inputCls =
-  'w-full rounded-2xl border bg-surface px-4 text-[0.95rem] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-pink-strong focus:shadow-[0_0_0_4px_rgb(236_72_153/0.14)]';
+  'w-full rounded-2xl border bg-surface px-4 text-[0.95rem] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-forest focus:shadow-[0_0_0_4px_rgb(63_122_90/0.14)]';
 
 export function Contact() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
@@ -68,7 +68,7 @@ export function Contact() {
     ) : null;
 
   const cards = [
-    { href: `tel:${site.contact.phoneHref}`, label: 'Call us', value: site.contact.phone, Icon: Phone, cls: 'bg-[linear-gradient(135deg,#f78fc6,#be185d)] text-white' },
+    { href: `tel:${site.contact.phoneHref}`, label: 'Call us', value: site.contact.phone, Icon: Phone, cls: 'bg-[linear-gradient(135deg,#6fa585,#2c5a42)] text-white' },
     {
       href: whatsappLink(`Hello ${site.shortName}! I'd like to know more about your wooden kitchenware.`),
       label: 'WhatsApp',
@@ -82,7 +82,7 @@ export function Contact() {
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32">
-      <Kolam className="absolute -left-48 top-20 h-[34rem] w-[34rem] text-pink-strong/[0.06]" spin />
+      <Kolam className="absolute -left-48 top-20 h-[34rem] w-[34rem] text-forest/[0.06]" spin />
       <div className="container-page relative">
         <SectionHeading
           id="contact-title"
@@ -202,7 +202,7 @@ export function Contact() {
                   <label
                     key={t.id}
                     className={cn(
-                      'relative flex h-11 cursor-pointer items-center justify-center rounded-2xl border px-2 text-center text-[0.8rem] font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-pink-strong',
+                      'relative flex h-11 cursor-pointer items-center justify-center rounded-2xl border px-2 text-center text-[0.8rem] font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest',
                       v.type === t.id ? 'border-transparent text-[#3a1f0c]' : 'border-line-strong text-muted hover:border-honey hover:text-fg',
                     )}
                   >

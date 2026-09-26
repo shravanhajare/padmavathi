@@ -8,7 +8,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Kolam } from '@/components/ui/Kolam';
 import { cn } from '@/lib/utils';
 
-const AVATAR = ['#f9a8d4', '#facc15', '#e2a867', '#f472b6', '#fde68a', '#c68642'];
+const AVATAR = ['#b9d3b1', '#facc15', '#e2a867', '#7fbf95', '#fde68a', '#c68642'];
 
 export function Testimonials() {
   const reduce = useReducedMotion();
@@ -36,7 +36,7 @@ export function Testimonials() {
     <section id="reviews" aria-labelledby="reviews-title" className="relative scroll-mt-20 overflow-hidden bg-bg-2 py-24 sm:py-32">
       <div className="honey-line absolute inset-x-0 top-0" />
       <Kolam className="absolute -right-40 top-10 h-[30rem] w-[30rem] text-honey/15" spin />
-      <Kolam className="absolute -left-48 bottom-0 h-[26rem] w-[26rem] text-pink-strong/[0.07]" petals={10} />
+      <Kolam className="absolute -left-48 bottom-0 h-[26rem] w-[26rem] text-forest/[0.07]" petals={10} />
       <div className="container-page relative">
         <SectionHeading
           id="reviews-title"
@@ -143,7 +143,7 @@ export function Testimonials() {
                     {i === index && !reduce && (
                       <motion.span
                         key={`${index}-${paused}`}
-                        className="absolute inset-y-0 left-0 bg-[linear-gradient(90deg,#ec4899,#c68642)]"
+                        className="absolute inset-y-0 left-0 bg-[linear-gradient(90deg,#3f7a5a,#c68642)]"
                         initial={{ width: '0%' }}
                         animate={{ width: paused ? '0%' : '100%' }}
                         transition={{ duration: paused ? 0.2 : 6.5, ease: 'linear' }}

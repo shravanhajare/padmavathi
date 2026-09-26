@@ -18,7 +18,7 @@ export const tintClasses =
   'bg-[radial-gradient(circle_at_50%_38%,var(--ta)_0%,var(--tb)_100%)] dark:bg-[radial-gradient(circle_at_50%_38%,var(--tda)_0%,var(--tdb)_100%)]';
 
 const BADGES: Partial<Record<ProductTag, { label: string; cls: string; Icon: typeof Star }>> = {
-  bestseller: { label: 'Bestseller', cls: 'bg-[#be185d] text-white', Icon: Star },
+  bestseller: { label: 'Bestseller', cls: 'bg-[#2c5a42] text-white', Icon: Star },
   new: { label: 'New', cls: 'bg-[#5c3a21] text-[#fff7e0]', Icon: Sparkles },
   gift: { label: 'Gift', cls: 'bg-[#facc15] text-[#5c3a21]', Icon: Gift },
   handmade: { label: 'Handmade', cls: 'bg-white/90 text-[#5c3a21] ring-1 ring-[#c68642]/40', Icon: Hand },
@@ -109,7 +109,7 @@ export function VariantPicker({
           <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="h-9 w-full appearance-none truncate rounded-full border border-line-strong bg-surface-2/70 pl-3 pr-8 text-[0.74rem] font-semibold text-fg outline-none transition-colors focus:border-pink-strong"
+            className="h-9 w-full appearance-none truncate rounded-full border border-line-strong bg-surface-2/70 pl-3 pr-8 text-[0.74rem] font-semibold text-fg outline-none transition-colors focus:border-forest"
           >
             {product.variants.map((v) => (
               <option key={v.id} value={v.id}>

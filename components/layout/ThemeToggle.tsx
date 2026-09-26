@@ -47,7 +47,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       {/* sliding knob */}
       <span
         aria-hidden="true"
-        className="relative z-10 grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(135deg,#fffaf0,#fde7b0)] shadow-[0_2px_10px_rgb(245_158_11/0.45)] transition-[transform,background,box-shadow] duration-[650ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] dark:translate-x-[2.1rem] dark:bg-[linear-gradient(135deg,#3b2a1f,#221710)] dark:shadow-[0_0_16px_rgb(249_168_212/0.45)]"
+        className="relative z-10 grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(135deg,#fffaf0,#fde7b0)] shadow-[0_2px_10px_rgb(245_158_11/0.45)] transition-[transform,background,box-shadow] duration-[650ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] dark:translate-x-[2.1rem] dark:bg-[linear-gradient(135deg,#3b2a1f,#221710)] dark:shadow-[0_0_16px_rgb(185_211_177/0.45)]"
       >
         <svg viewBox="0 0 24 24" className="h-[1.2rem] w-[1.2rem] overflow-visible">
           <defs>
@@ -82,7 +82,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             cy="12"
             r="5.4"
             mask={`url(#${id}-m)`}
-            className="fill-[#f59e0b] transition-[r,fill] duration-[650ms] dark:fill-[#f9a8d4] dark:[r:7.4px]"
+            className="fill-[#f59e0b] transition-[r,fill] duration-[650ms] dark:fill-[#b9d3b1] dark:[r:7.4px]"
           />
         </svg>
       </span>

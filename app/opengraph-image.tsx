@@ -14,7 +14,7 @@ export default function OpengraphImage() {
           height: '100%',
           display: 'flex',
           position: 'relative',
-          background: 'linear-gradient(135deg, #fff8ea 0%, #fbe3c6 55%, #fbcfdc 100%)',
+          background: 'linear-gradient(135deg, #fff8ea 0%, #fbe3c6 55%, #dde9cf 100%)',
           color: '#2e1d12',
           fontFamily: 'serif',
         }}
@@ -28,13 +28,13 @@ export default function OpengraphImage() {
         <div style={{ position: 'absolute', right: 20, top: 290, width: 520, height: 64, borderRadius: 32, background: 'linear-gradient(180deg,#f0c890,#c68642 55%,#7a4424)', transform: 'rotate(-28deg)', display: 'flex' }} />
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 84px', width: 720 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 24, letterSpacing: 6, color: '#8a4a24', textTransform: 'uppercase' }}>
-            <div style={{ width: 14, height: 14, borderRadius: 99, background: '#ec4899' }} />
+            <div style={{ width: 14, height: 14, borderRadius: 99, background: '#3f7a5a' }} />
             Padmavathi Enterprises
           </div>
           <div style={{ marginTop: 30, fontSize: 84, fontWeight: 700, lineHeight: 1.02 }}>Handcrafted</div>
           <div style={{ fontSize: 84, fontWeight: 700, lineHeight: 1.02, color: '#a0522d', fontStyle: 'italic' }}>Wooden Kitchenware</div>
           <div style={{ marginTop: 30, fontSize: 30, color: '#6c5344' }}>Belan · Chakla · Mathani · Coconut scrapers · Spice boxes</div>
-          <div style={{ marginTop: 34, display: 'flex', fontSize: 24, color: '#3b1a0e', background: 'linear-gradient(135deg,#fcc2e0,#ee6aad)', border: '3px solid #d9a44e', borderRadius: 999, padding: '12px 30px', width: 400 }}>
+          <div style={{ marginTop: 34, display: 'flex', fontSize: 24, color: '#fff4e2', background: 'linear-gradient(100deg,#8e4d22 0%,#a8622e 24%,#7a3f19 52%,#8e4d22 76%,#a8622e 100%)', border: '3px solid #5a3015', borderRadius: 999, padding: '12px 30px', width: 400 }}>
             Hand-turned from solid wood
           </div>
         </div>

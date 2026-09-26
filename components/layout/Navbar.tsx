@@ -46,7 +46,7 @@ function CartButton() {
       initial={false}
       animate={bump ? { scale: [1, 1.14, 0.94, 1.05, 1] } : undefined}
       transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-      className="relative flex h-10 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#fcc2e0,#f78fc6_55%,#ee6aad)] pl-3 pr-3.5 text-[0.9rem] font-semibold text-[#3b1a0e] shadow-[inset_0_0_0_2px_#d9a44e,0_8px_22px_-8px_rgb(236_72_153/0.7)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[inset_0_0_0_2px_#e8b865,0_0_0_4px_rgb(249_168_212/0.35),0_10px_26px_-8px_rgb(236_72_153/0.8)] sm:pl-3.5 sm:pr-4"
+      className="relative flex h-10 items-center gap-2 btn-wood btn-wood-teak rounded-full pl-3 pr-3.5 text-[0.9rem] font-semibold sm:pl-3.5 sm:pr-4"
     >
       <motion.span
         key={bump}
@@ -145,7 +145,7 @@ export function Navbar() {
                       {isActive && (
                         <motion.span
                           layoutId="nav-underline"
-                          className="absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-[linear-gradient(90deg,#ec4899,#c68642)]"
+                          className="absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-[linear-gradient(90deg,#3f7a5a,#c68642)]"
                           transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                         />
                       )}

@@ -13,7 +13,7 @@ const STEPS = [
     Icon: Droplets,
     title: 'Wash by hand',
     body: 'Rinse with warm water and a drop of mild soap straight after use. A soft scrubber lifts dough and masala.',
-    tint: 'from-[#fde7f1] to-[#f9c6dc] dark:from-[#43202f] dark:to-[#2a1520]',
+    tint: 'from-[#eaf3e4] to-[#cfe3c7] dark:from-[#1f3326] dark:to-[#15221a]',
   },
   {
     Icon: Sun,
@@ -68,7 +68,7 @@ export function CareGuide() {
             <motion.path
               d="M0 30 C 60 60, 100 60, 125 30 S 190 0, 250 30 S 315 60, 375 30 S 440 0, 500 30 S 565 60, 625 30 S 690 0, 750 30 S 815 60, 875 30 S 940 0, 1000 30"
               fill="none"
-              stroke="#ec4899"
+              stroke="#3f7a5a"
               strokeOpacity="0.5"
               strokeWidth="1.6"
               style={{ pathLength: line }}

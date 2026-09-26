@@ -250,7 +250,7 @@ function StepCard({ step, className }: { step: (typeof STEPS)[number]; className
       <h3 className="mt-1.5 text-2xl font-semibold text-fg sm:text-[1.75rem]">{step.title}</h3>
       <p className="mt-3 leading-relaxed text-muted">{step.body}</p>
       <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface-2/80 px-3 py-1 text-xs font-semibold text-fg">
-        <span className="h-1.5 w-1.5 rounded-full bg-pink-strong" aria-hidden="true" />
+        <span className="h-1.5 w-1.5 rounded-full bg-forest" aria-hidden="true" />
         {step.chip}
       </span>
     </article>
@@ -346,7 +346,7 @@ export function OurCraft() {
           </div>
           <div className="relative mt-4 h-8">
             <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-line" />
-            <div ref={barRef} className="absolute inset-x-0 top-1/2 h-[3px] origin-left -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,#ec4899,#c68642,#facc15)]" />
+            <div ref={barRef} className="absolute inset-x-0 top-1/2 h-[3px] origin-left -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,#3f7a5a,#c68642,#facc15)]" />
             <div ref={belanRef} className="absolute top-1/2 -ml-8 -translate-y-1/2" aria-hidden="true">
               <svg viewBox="0 0 64 16" className="h-4 w-16">
                 <rect x="10" y="2" width="44" height="12" rx="6" fill="#c68642" />
