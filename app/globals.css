@@ -1,0 +1,404 @@
+@import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   Light (a warm, sunlit workshop) is the primary theme. Every colour used by
+   components comes from these variables, so the dark theme is a token swap. */
+:root {
+  --bg: #fff8ea;
+  --bg-2: #fdf0d8;
+  --surface: #fffdf7;
+  --surface-2: #fcf1df;
+  --card: rgb(255 253 247 / 0.88);
+  --fg: #2e1d12;
+  --fg-muted: #6c5344;
+  --border: rgb(92 58 33 / 0.14);
+  --border-strong: rgb(92 58 33 / 0.26);
+
+  /* brand */
+  --pink: #f9a8d4;
+  --pink-strong: #ec4899;
+  --pink-deep: #be185d;
+  --marigold: #facc15;
+  --marigold-deep: #d49a06;
+  --cream: #fff7e0;
+
+  /* wood accents */
+  --teak: #a0522d;
+  --honey: #c68642;
+  --honey-soft: #e9c38f;
+  --walnut: #5c3a21;
+  --gold: #d4a24c;
+  --leaf: #2f7d3a;
+
+  /* text-safe accent (AA on --bg) and its foreground */
+  --accent: #be185d;
+  --accent-fg: #ffffff;
+  --wood-text: #8a4a24;
+
+  --shadow-rgb: 92 58 33;
+  --glow-rgb: 236 72 153;
+  --hero-a: #fff4df;
+  --hero-b: #f9dfc2;
+  --grain-opacity: 0.04;
+}
+
+[data-theme='dark'] {
+  --bg: #15100c;
+  --bg-2: #1c150f;
+  --surface: #221912;
+  --surface-2: #2b2017;
+  --card: rgb(36 26 19 / 0.86);
+  --fg: #fbefe1;
+  --fg-muted: #cdb59e;
+  --border: rgb(249 168 212 / 0.13);
+  --border-strong: rgb(249 168 212 / 0.25);
+
+  --pink: #f9a8d4;
+  --pink-strong: #f472b6;
+  --pink-deep: #f9a8d4;
+  --marigold: #fcd34d;
+  --marigold-deep: #fcd34d;
+  --cream: #2a1f16;
+
+  --teak: #d08a5c;
+  --honey: #e2a867;
+  --honey-soft: #f1cf9f;
+  --walnut: #e7c9a8;
+  --gold: #f0c16a;
+  --leaf: #6fcf7c;
+
+  --accent: #f9a8d4;
+  --accent-fg: #2a0f1f;
+  --wood-text: #f1c48d;
+
+  --shadow-rgb: 0 0 0;
+  --glow-rgb: 244 114 182;
+  --hero-a: #241811;
+  --hero-b: #120d0a;
+  --grain-opacity: 0.06;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-pink: var(--pink);
+  --color-pink-strong: var(--pink-strong);
+  --color-pink-deep: var(--pink-deep);
+  --color-marigold: var(--marigold);
+  --color-marigold-deep: var(--marigold-deep);
+  --color-cream: var(--cream);
+  --color-teak: var(--teak);
+  --color-honey: var(--honey);
+  --color-honey-soft: var(--honey-soft);
+  --color-walnut: var(--walnut);
+  --color-gold: var(--gold);
+  --color-leaf: var(--leaf);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-wood: var(--wood-text);
+
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.6s ease-in-out infinite;
+  --animate-sway: sway 7s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes sway {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-6deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(8deg);
+    }
+  }
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--pink);
+    color: #2e1d12;
+  }
+  :focus-visible {
+    outline: 2.5px solid var(--pink-strong);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  [data-theme='dark'] :focus-visible {
+    outline-color: var(--marigold);
+  }
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+/* Theme switch cross-fade (added briefly by the theme toggle). */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 450ms ease,
+    border-color 450ms ease,
+    color 450ms ease,
+    fill 450ms ease,
+    stroke 450ms ease,
+    box-shadow 450ms ease !important;
+}
+
+/* Subtle paper grain over the whole page for a tactile, premium feel. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ───────────────────────── Utilities ───────────────────────── */
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 1280px;
+  padding-inline: 1rem;
+  @media (width >= 640px) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility text-gradient-wood {
+  background: linear-gradient(100deg, #7a3e1c 0%, #b8692f 28%, #e0a55a 50%, #a0522d 72%, #5c3a21 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  [data-theme='dark'] & {
+    background-image: linear-gradient(100deg, #f1c48d 0%, #e2a867 30%, #fde7c2 50%, #d08a5c 75%, #f1c48d 100%);
+  }
+}
+
+@utility text-gradient-pink {
+  background: linear-gradient(100deg, #be185d 0%, #ec4899 45%, #c68642 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  [data-theme='dark'] & {
+    background-image: linear-gradient(100deg, #f9a8d4 0%, #f472b6 45%, #fcd34d 100%);
+  }
+}
+
+@utility honey-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--honey) 20%, var(--marigold) 50%, var(--honey) 80%, transparent);
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+@utility shadow-soft {
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / 0.06),
+    0 8px 24px -8px rgb(var(--shadow-rgb) / 0.16);
+}
+
+@utility shadow-lift {
+  box-shadow:
+    0 2px 4px rgb(var(--shadow-rgb) / 0.06),
+    0 24px 48px -16px rgb(var(--shadow-rgb) / 0.32);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--bg-2) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* A stretched fractal noise that reads as long wood grain, tinted by `color`. */
+@utility wood-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0 0.12 0 0 0 1.1 -0.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 600px 240px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ───────────────────────── Loader: a belan rolling out a roti ───────────────────────── */
+@keyframes pe-roll {
+  0% {
+    transform: translateX(-38px) rotate(0deg);
+  }
+  50% {
+    transform: translateX(38px) rotate(360deg);
+  }
+  100% {
+    transform: translateX(-38px) rotate(0deg);
+  }
+}
+.pe-belan-roll {
+  animation: pe-roll 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes pe-belan-slide {
+  0% {
+    transform: translateX(-38px);
+  }
+  50% {
+    transform: translateX(38px);
+  }
+  100% {
+    transform: translateX(-38px);
+  }
+}
+.pe-belan-slide {
+  animation: pe-belan-slide 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes pe-dough {
+  0%,
+  100% {
+    transform: scaleX(0.92);
+  }
+  50% {
+    transform: scaleX(1.06);
+  }
+}
+.pe-dough {
+  animation: pe-dough 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  transform-origin: center;
+}
+
+@keyframes pe-scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+.pe-scroll-dot {
+  animation: pe-scroll-dot 1.8s ease-in-out infinite;
+}
+
+/* ───────────────────────── Product cards ───────────────────────── */
+@property --pe-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.pe-card {
+  background: linear-gradient(160deg, var(--border-strong), var(--border) 45%, var(--border-strong));
+}
+/* hover only where there is a real pointer, so a tap on a phone doesn't leave the border spinning */
+@media (hover: hover) {
+  .pe-card:hover {
+    background: conic-gradient(from var(--pe-angle), rgb(236 72 153 / 0.25), #e9c38f, #ec4899, #facc15, #c68642, rgb(236 72 153 / 0.25));
+    animation: pe-border-spin 3.5s linear infinite;
+  }
+}
+.pe-card:has(:focus-visible) {
+  background: conic-gradient(from var(--pe-angle), rgb(236 72 153 / 0.25), #e9c38f, #ec4899, #facc15, #c68642, rgb(236 72 153 / 0.25));
+  animation: pe-border-spin 3.5s linear infinite;
+}
+@keyframes pe-border-spin {
+  to {
+    --pe-angle: 360deg;
+  }
+}
+
+/* ───────────────────────── Marquee ───────────────────────── */
+@keyframes pe-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
