@@ -5,8 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { AlertCircle, CheckCircle2, Clock, Loader2, Mail, MapPin, Navigation, Phone, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ENQUIRY_TYPES, enquirySchema, type EnquiryInput } from '@/lib/validation/checkout';
-import { fullAddress, site, whatsappLink } from '@/data/site';
+import { ENQUIRY_TYPES, enquirySchema, type EnquiryInput, type ErrorKey } from '@/lib/validation/forms';
+import { sendEnquiryAction } from '@/app/actions/orders';
+import { useT } from '@/i18n/client';
+import { useBusiness } from '@/components/layout/AppData';
 import { ENQUIRY_EVENT, type EnquiryKind } from '@/lib/events';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Button } from '@/components/ui/Button';
@@ -21,6 +23,9 @@ const inputCls =
   'w-full rounded-2xl border bg-surface px-4 text-[0.95rem] text-fg outline-none transition-[border-color,box-shadow] placeholder:text-muted/60 focus:border-forest focus:shadow-[0_0_0_4px_rgb(63_122_90/0.14)]';
 
 export function Contact() {
+  const t = useT();
+  const biz = useBusiness();
+  const c = t.sections.contact;
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const {
     register,
@@ -32,7 +37,7 @@ export function Contact() {
   } = useForm<EnquiryInput>({
     resolver: zodResolver(enquirySchema),
     mode: 'onTouched',
-    defaultValues: { name: '', phone: '', type: 'retail', message: '', website: '' },
+    defaultValues: { name: '', phone: '', type: 'bulk', message: '', website: '' },
   });
 
   // CTAs elsewhere (gift sets, checkout) can preselect the enquiry type
@@ -45,8 +50,8 @@ export function Contact() {
   const onSubmit = async (values: EnquiryInput) => {
     setStatus('sending');
     try {
-      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
-      if (!res.ok) throw new Error();
+      const res = await sendEnquiryAction(values);
+      if (!res?.ok) throw new Error();
       setStatus('sent');
       reset();
     } catch {
@@ -55,29 +60,27 @@ export function Contact() {
   };
 
   const v = watch();
-  const typeLabel = ENQUIRY_TYPES.find((t) => t.id === v.type)?.label ?? '';
-  const whatsappEnquiry = whatsappLink(
-    `Hello ${site.shortName}! ${typeLabel} enquiry.\nName: ${v.name || '-'}\nPhone: ${v.phone || '-'}\n${v.message || ''}`.trim(),
-  );
+  const typeLabel = c.types[v.type] ?? '';
+  const whatsappEnquiry = biz.waLink(`${c.waIntro(typeLabel)}\n${c.waName}: ${v.name || '-'}\n${c.waPhone}: ${v.phone || '-'}\n${v.message || ''}`.trim());
 
   const err = (key: keyof EnquiryInput) =>
     errors[key] ? (
       <p id={`enq-${key}-error`} className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-[#dc2626] dark:text-[#fca5a5]">
-        <AlertCircle size={13} aria-hidden="true" /> {errors[key]?.message}
+        <AlertCircle size={13} aria-hidden="true" /> {t.common.errors[errors[key]?.message as ErrorKey] ?? errors[key]?.message}
       </p>
     ) : null;
 
   const cards = [
-    { href: `tel:${site.contact.phoneHref}`, label: 'Call us', value: site.contact.phone, Icon: Phone, cls: 'bg-[linear-gradient(135deg,#6fa585,#2c5a42)] text-white' },
+    { href: `tel:${biz.tel}`, label: c.call, value: biz.phone, Icon: Phone, cls: 'bg-[linear-gradient(135deg,#6fa585,#2c5a42)] text-white' },
     {
-      href: whatsappLink(`Hello ${site.shortName}! I'd like to know more about your wooden kitchenware.`),
-      label: 'WhatsApp',
-      value: 'Chat now',
+      href: biz.waLink(t.common.whatsappHello),
+      label: c.whatsapp,
+      value: c.chat,
       Icon: WhatsAppIcon,
       cls: 'bg-[#25d366] text-white',
       external: true,
     },
-    { href: `mailto:${site.contact.email}`, label: 'Email', value: site.contact.email, Icon: Mail, cls: 'bg-[linear-gradient(135deg,#f6d9a6,#c68642)] text-[#3a1f0c]' },
+    { href: `mailto:${biz.email}`, label: c.email, value: biz.email, Icon: Mail, cls: 'bg-[linear-gradient(135deg,#f6d9a6,#c68642)] text-[#3a1f0c]' },
   ];
 
   return (
@@ -86,10 +89,10 @@ export function Contact() {
       <div className="container-page relative">
         <SectionHeading
           id="contact-title"
-          eyebrow="Say namaste"
-          title="Visit the workshop or"
-          accent="drop us a line"
-          subtitle="Questions about a piece, a bulk order for a wedding, or something custom-turned to your size: we reply within a working day."
+          eyebrow={c.eyebrow}
+          title={c.title}
+          accent={c.accent}
+          subtitle={c.subtitle}
         />
 
         <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.1fr]">
@@ -106,8 +109,8 @@ export function Contact() {
                   <LogoMark className="h-11 w-11" />
                 </span>
                 <div>
-                  <p className="font-display text-xl font-semibold text-fg">{site.contact.name}</p>
-                  <p className="text-sm text-muted">{site.contact.role}</p>
+                  <p className="font-display text-xl font-semibold text-fg">{t.common.brand.name}</p>
+                  <p className="text-sm text-muted">{c.role}</p>
                 </div>
               </div>
               <ul className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -135,12 +138,12 @@ export function Contact() {
               <div className="mt-6 grid gap-4 border-t border-line pt-6 text-sm sm:grid-cols-2">
                 <div className="flex gap-3 text-muted">
                   <MapPin size={18} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
-                  <address className="not-italic">{fullAddress}</address>
+                  <address className="not-italic">{biz.fullAddress}</address>
                 </div>
                 <div className="flex gap-3 text-muted">
                   <Clock size={18} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                   <ul>
-                    {site.hours.map((h) => (
+                    {c.hours.map((h) => (
                       <li key={h.days}>
                         <span className="font-semibold text-fg">{h.days}</span>
                         <br />
@@ -160,19 +163,19 @@ export function Contact() {
               className="relative overflow-hidden rounded-[2rem] border border-line shadow-soft"
             >
               <iframe
-                title={`Map showing ${site.name}`}
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&z=13&output=embed`}
+                title={c.mapTitle}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(biz.mapQuery)}&z=13&output=embed`}
                 className="h-72 w-full grayscale-[35%] sepia-[20%] dark:invert-[0.9] dark:hue-rotate-180"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapQuery)}`}
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(biz.mapQuery)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-surface/95 px-3.5 py-2 text-xs font-semibold text-fg shadow-lift backdrop-blur"
               >
-                <Navigation size={13} aria-hidden="true" /> Get directions
+                <Navigation size={13} aria-hidden="true" /> {c.directions}
               </a>
             </motion.div>
           </div>
@@ -190,31 +193,31 @@ export function Contact() {
             <div className="wood-grain absolute inset-x-0 top-0 h-2 bg-[linear-gradient(90deg,#c68642,#a0522d)]" aria-hidden="true" />
             <div>
               <h3 id="enquiry-title" className="text-2xl font-semibold text-fg">
-                Send an enquiry
+                {c.formTitle}
               </h3>
-              <p className="mt-1 text-sm text-muted">Retail, bulk, wholesale or a custom piece: tell us what you need.</p>
+              <p className="mt-1 text-sm text-muted">{c.formSub}</p>
             </div>
 
             <fieldset>
-              <legend className="mb-2 text-sm font-medium text-fg">Enquiry type</legend>
+              <legend className="mb-2 text-sm font-medium text-fg">{c.typeLegend}</legend>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {ENQUIRY_TYPES.map((t) => (
+                {ENQUIRY_TYPES.map((id) => (
                   <label
-                    key={t.id}
+                    key={id}
                     className={cn(
                       'relative flex h-11 cursor-pointer items-center justify-center rounded-2xl border px-2 text-center text-[0.8rem] font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest',
-                      v.type === t.id ? 'border-transparent text-[#3a1f0c]' : 'border-line-strong text-muted hover:border-honey hover:text-fg',
+                      v.type === id ? 'border-transparent text-[#3a1f0c]' : 'border-line-strong text-muted hover:border-honey hover:text-fg',
                     )}
                   >
-                    {v.type === t.id && (
+                    {v.type === id && (
                       <motion.span
                         layoutId="enquiry-type"
                         className="absolute inset-0 rounded-2xl bg-[linear-gradient(135deg,#f6d9a6,#e2a867)]"
                         transition={{ type: 'spring', stiffness: 450, damping: 34 }}
                       />
                     )}
-                    <input type="radio" value={t.id} {...register('type')} className="sr-only" />
-                    <span className="relative">{t.label}</span>
+                    <input type="radio" value={id} {...register('type')} className="sr-only" />
+                    <span className="relative">{c.types[id]}</span>
                   </label>
                 ))}
               </div>
@@ -224,7 +227,7 @@ export function Contact() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="enq-name" className="mb-1.5 block text-sm font-medium text-fg">
-                  Your name
+                  {c.name}
                 </label>
                 <input
                   id="enq-name"
@@ -239,7 +242,7 @@ export function Contact() {
               </div>
               <div>
                 <label htmlFor="enq-phone" className="mb-1.5 block text-sm font-medium text-fg">
-                  Mobile number
+                  {c.phone}
                 </label>
                 <input
                   id="enq-phone"
@@ -257,7 +260,7 @@ export function Contact() {
             </div>
             <div>
               <label htmlFor="enq-message" className="mb-1.5 block text-sm font-medium text-fg">
-                Message
+                {c.message}
               </label>
               <textarea
                 id="enq-message"
@@ -266,7 +269,7 @@ export function Contact() {
                 aria-invalid={!!errors.message}
                 aria-describedby={errors.message ? 'enq-message-error' : undefined}
                 className={cn(inputCls, 'py-3', errors.message ? 'border-[#dc2626]' : 'border-line-strong')}
-                placeholder="e.g. 150 spoon & spatula sets as wedding return gifts, delivered to Chennai by 20 December."
+                placeholder={c.messagePlaceholder}
               />
               {err('message')}
             </div>
@@ -283,7 +286,7 @@ export function Contact() {
                   exit={{ opacity: 0 }}
                   className="flex items-center gap-2 rounded-2xl border border-leaf/30 bg-leaf/10 p-3 text-sm font-medium text-leaf"
                 >
-                  <CheckCircle2 size={17} aria-hidden="true" /> Thank you! We’ll get back to you within a working day.
+                  <CheckCircle2 size={17} aria-hidden="true" /> {c.sent}
                 </motion.p>
               )}
               {status === 'error' && (
@@ -295,23 +298,23 @@ export function Contact() {
                   exit={{ opacity: 0 }}
                   className="flex items-center gap-2 rounded-2xl border border-[#fca5a5] bg-[#fef2f2] p-3 text-sm text-[#991b1b] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fecaca]"
                 >
-                  <AlertCircle size={17} aria-hidden="true" /> That didn’t send. Please try again, or message us on WhatsApp.
+                  <AlertCircle size={17} aria-hidden="true" /> {c.error}
                 </motion.p>
               )}
             </AnimatePresence>
 
             <div className="mt-auto flex flex-col gap-3 sm:flex-row">
-              <Button type="submit" size="lg" className="flex-1" disabled={status === 'sending'}>
+              <Button type="submit" size="lg" className="sm:flex-1" disabled={status === 'sending'}>
                 {status === 'sending' ? <Loader2 size={18} className="animate-spin" aria-hidden="true" /> : <Send size={17} aria-hidden="true" />}
-                Send enquiry
+                {c.send}
               </Button>
               <a
                 href={whatsappEnquiry}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full border border-[#25d366]/50 bg-[#25d366]/10 px-6 font-semibold text-[#128c4a] transition-colors hover:bg-[#25d366]/20 dark:text-[#4ade80]"
+                className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#25d366]/50 sm:flex-1 bg-[#25d366]/10 px-6 font-semibold text-[#128c4a] transition-colors hover:bg-[#25d366]/20 dark:text-[#4ade80]"
               >
-                <WhatsAppIcon size={18} /> Send on WhatsApp
+                <WhatsAppIcon size={18} /> {c.sendWhatsApp}
               </a>
             </div>
           </motion.form>

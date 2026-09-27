@@ -1,7 +1,10 @@
 # Padmavathi Enterprises: Handcrafted Wooden Kitchenware
 
 A premium, scroll-animated 3D storefront for a maker of hand-turned wooden kitchen utensils: belans, chakla,
-coconut scrapers, mathani churners, spatulas, ladles, spoons, chopping boards, masala dabbas and mortar & pestles.
+coconut scrapers, mathani churners, spatulas, ladles, spoons, chopping boards and mortar & pestles.
+
+**Bulk & wholesale only:** every item is ordered in quantities of 20 or more (editable in the admin). Orders are
+saved to Postgres and sent to WhatsApp; there is no online payment. The whole site speaks **English, Kannada and Hindi**.
 
 - **Scroll-driven 3D hero, "From raw wood to your kitchen".** A rough log floats in, then goes onto a lathe.
   The bark peels away at the moving tool front while the profile is carved into a belan, and real-time shavings
@@ -13,13 +16,21 @@ coconut scrapers, mathani churners, spatulas, ladles, spoons, chopping boards, m
   shader: growth rings around a pith, pores and colour streaks computed from 3D position. Turned pieces therefore
   show cathedral figure and end grain, in teak, sheesham, neem and acacia. The same models render the product
   photos and the live 3D quick view.
-- **Shop.** Nine category tabs, search, a wood filter and sorting. Cards have 3D tilt with glare, a wooden display
-  plinth, variant chips, and an Add button that becomes a quantity stepper.
+- **Shop.** Category tabs, search, a wood filter and sorting. Cards have 3D tilt with glare, a wooden display
+  plinth, variant chips, and an Add button that adds the bulk minimum and becomes a ±5 stepper.
 - **Cart.** Items fly into the cart and land with a burst of wood-shaving curls, followed by a toast. There's a
-  slide-in drawer, a full `/cart` page and a mobile cart bar, and the cart persists across reloads.
-- **Checkout.** Delivery or pickup, and retail or bulk/wholesale (business name + GSTIN). Validation uses Zod.
-  Payment runs through Razorpay with server-side re-pricing and signature verification. There are success
-  (shaving confetti) and failure (retry) pages.
+  slide-in drawer, a full `/cart` page and a mobile cart bar, and the cart persists across reloads. Quantities
+  can be typed and never drop below the minimum.
+- **Ordering.** Customers register / log in (mobile number + password), then place the order: delivery or pickup,
+  business name, GSTIN, address, needed-by date and notes. The server re-prices from the catalogue, enforces the
+  minimum, saves the order and shows a *Send order on WhatsApp* button with the full order prefilled for the shop's
+  number. Customers see their order history and statuses under `/account`.
+- **Admin (`/admin`).** Dashboard, orders (search, status filter, status updates, internal notes, one-tap WhatsApp /
+  call), products (edit names and copy in all three languages, sizes and prices, show/hide, add new), customers
+  (make admin, disable, reset password), enquiries, and settings (minimum quantity, WhatsApp number).
+- **Languages.** English / ಕನ್ನಡ / हिन्दी switcher in the header (cookie `pe_lang`). UI text lives in
+  `i18n/messages/*.ts` with all three languages side by side, typed so a missing translation fails the build.
+  Product translations are stored per product and edited in the admin.
 - **Rest of the site.** Gift sets, Our Craft (a pinned horizontal-scroll making timeline), Why Wood, a care guide,
   testimonials, contact with an enquiry form and map, and a floating WhatsApp button.
 - **Themes and accessibility.** Light is the default, with a dark walnut theme (sun/moon toggle). Reduced motion,
@@ -34,13 +45,19 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
-It works with no configuration. Without Razorpay keys, checkout runs in **demo mode**: a simulated payment
-window lets you try both success and failure.
+Set `DATABASE_URL` in `.env.local` (see below), then create the tables and seed the catalogue once:
+
+```bash
+npm run db:setup     # safe to re-run; --reset-products overwrites admin edits from data/products.ts
+```
+
+Register an account, then open the Supabase Table Editor (`public.users`) and set that row's `role` to `admin`. Every admin after that can be made from `/admin/customers`.
 
 | Command | What it does |
 | --- | --- |
 | `npm run build && npm start` | Production build and server |
 | `npm run typecheck` | TypeScript check |
+| `npm run db:setup` | Create/upgrade the database schema and seed products, reviews and contact details |
 | `npm run render:products` | Re-render product photos from the 3D models (see below) |
 
 Requires Node 20+.
@@ -54,32 +71,35 @@ Copy `.env.example` to `.env.local`:
 | Variable | Where it's used |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Canonical URL for SEO, sitemap and Open Graph |
-| `RAZORPAY_KEY_ID` | Server: creating orders |
-| `RAZORPAY_KEY_SECRET` | Server only: creating orders and verifying signatures. **Never expose this.** |
-| `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Browser: opens Razorpay Checkout (same value as `RAZORPAY_KEY_ID`) |
-| `PAYMENT_PROVIDER` | Optional: `razorpay`, `mock` or `stripe` |
+| `DATABASE_URL` | Server only. Supabase **transaction pooler** URL (port 6543); carries the DB password |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Project reference (publishable key is safe in the browser) |
+| `SESSION_SECRET` | Signs the session JWT. Required in production; generate with `openssl rand -base64 32` |
+| `WHATSAPP_ORDER_NUMBER` | Default WhatsApp number for orders (the admin setting overrides it) |
+| `CALLMEBOT_APIKEY` *or* `WHATSAPP_CLOUD_TOKEN` + `WHATSAPP_CLOUD_PHONE_ID` | Optional: also push every order to WhatsApp automatically |
 | `ENABLE_STUDIO` | Optional: `true` allows `/studio` in production |
 
-### Razorpay: test to live
+### Database and security
 
-1. Create an account at [dashboard.razorpay.com](https://dashboard.razorpay.com). In **Test mode**, open
-   *Account & Settings → API Keys* and generate keys (`rzp_test_…`).
-2. Put them in `.env.local` and restart `npm run dev`. The checkout badge now reads "Razorpay test mode". Pay with
-   Razorpay's [test cards or UPI IDs](https://razorpay.com/docs/payments/payments/test-card-upi-details/).
-3. To go live, complete KYC, switch the dashboard to **Live mode**, generate `rzp_live_…` keys, and set them as
-   environment variables on your host. Nothing else changes: the site detects live keys automatically.
-4. Recommended: add a `payment.captured` webhook in Razorpay and persist orders. See the TODO in
-   `app/api/payment/verify/route.ts`.
+Everything lives in Supabase's `public` schema, so it shows in the Supabase Table Editor: users, sessions,
+products, orders, enquiries, reviews and settings (minimum order, WhatsApp number, business contact details).
+Row-level security is on with no policies and the `anon`/`authenticated` roles have no grants, so the publishable
+key cannot read any of it through the REST API. Only the Next.js server touches the tables, through `DATABASE_URL`.
+Passwords are hashed with scrypt. A session is a signed JWT (HS256, `SESSION_SECRET`, see `lib/jwt.ts`) in an httpOnly,
+`secure` cookie; its signature rejects a tampered or expired cookie instantly, but the JWT is never trusted alone —
+`lib/server/auth.ts` re-checks a hash of it against `public.sessions` (and the user's role and `is_active`) on every
+request, so logging out, changing a password or disabling a user revokes it immediately everywhere. 6 wrong passwords
+in a row lock an account for 15 minutes, on top of the existing per-IP rate limit. Server actions check the admin role
+on every call — never only the page that led to them. `middleware.ts` adds a second, cheaper gate in front of
+`/admin` and `/account` at the edge, and sets a per-request CSP with a nonce for the two inline scripts the app ships
+(the theme-flash guard and the JSON-LD block), so `unsafe-inline` isn't needed. `SESSION_SECRET` must be set in
+production (see `.env.example`) or the app refuses to start a session.
 
-How a payment works:
-- `POST /api/payment/create-order` re-prices the cart from the catalogue on the server (browser prices are never
-  trusted), then creates the Razorpay order with the secret key. Bulk orders carry the business name and GSTIN
-  in the order notes.
-- The browser opens Razorpay Checkout (UPI, cards, netbanking, wallets).
-- `POST /api/payment/verify` checks `HMAC_SHA256(order_id|payment_id)` in constant time before the order counts
-  as paid.
+### Orders on WhatsApp
 
-The provider layer lives in `lib/payments/`. `providers/stripe.ts` describes how to swap in Stripe.
+Every order is saved and appears in `/admin`. The customer's confirmation page opens WhatsApp with the whole order
+addressed to the shop's number. For fully automatic delivery, set either `CALLMEBOT_APIKEY` (free: message
+"I allow callmebot to send me messages" to +34 644 51 95 23 from the order number) or the WhatsApp Cloud API
+variables; the admin's Settings page shows whether automatic alerts are on.
 
 ---
 
@@ -87,16 +107,17 @@ The provider layer lives in `lib/payments/`. `providers/stripe.ts` describes how
 
 | What | Where |
 | --- | --- |
-| **Contact name, phone, WhatsApp number, email, address, map location, working hours, socials** | `data/site.ts` (every value marked `PLACEHOLDER`) |
-| Prices, sizes, dimensions, weights, product copy | `data/products.ts` |
-| Reviews (currently **sample text**; remove the "sample reviews" line after replacing) | `data/testimonials.ts`, `components/sections/Testimonials.tsx` |
-| Our Craft story, making steps and stats | `components/sections/OurCraft.tsx`, `data/site.ts → stats` |
-| Delivery fee, free-delivery threshold, GST rate (5% by default; confirm with your accountant) | `lib/pricing.ts` |
-| Enquiry form delivery (currently only logged on the server) | `app/api/contact/route.ts` |
+| **Phone, email, address, map location, socials** | `/admin/settings` (stored in the database); working hours in `i18n/messages/sections.ts` |
+| Prices, sizes, product copy (all languages), visibility | `/admin/products` (seeded from `data/products.ts` + `i18n/products.ts`) |
+| Reviews (currently **sample text**, replace with real ones) | `/admin/reviews`, in English, Kannada and Hindi |
+| Any site text, in all three languages | `i18n/messages/*.ts` |
+| GST rate (5% by default; confirm with your accountant) | `lib/pricing.ts` |
 
 ---
 
 ## Adding a product
+
+The quickest way is **Admin → Products → Add product**. To add one in code (with its own 3D model):
 
 1. Append an entry to `data/products.ts` with an `id`, `category`, `wood`, `variants` (label + price, optional
    dimensions/weight per size), `dimensions`, `weight`, `finish`, `tags` and a `model`, for example
@@ -105,7 +126,8 @@ The provider layer lives in `lib/payments/`. `providers/stripe.ts` describes how
    installed Google Chrome; set `CHROME_PATH=/path/to/chrome` if Chrome is elsewhere, and
    `STUDIO_URL=http://localhost:3001` if the dev server is on another port. To use a real photo instead, set
    `image` to a file in `/public`.
-3. Visit **`/studio`** in development to see every product rendered side by side (`?single=1` shows bare pieces).
+3. Run `npm run db:setup` to add it to the database.
+4. Visit **`/studio`** in development to see every product rendered side by side (`?single=1` shows bare pieces).
 
 Model kinds and variants are listed in `data/types.ts → ModelKind`. The builders live in
 `components/three/models/` (`utensils.ts`, `scrapers.ts`, `crate.ts`) and product staging in `composition.ts`.
@@ -131,10 +153,11 @@ Wood species (colours, ring spacing, figure, finish) are tuned in `components/th
 ## Project structure
 
 ```
-app/                         routes (App Router), API routes, SEO files
-  api/payment/               create-order, verify
-  api/contact/               enquiry form
-  cart/  checkout/  order/   full cart, checkout, success & failure pages
+app/                         routes (App Router), SEO files
+  actions/                   server actions: auth, orders & enquiries, admin
+  login/  register/  account/  customer accounts and order history
+  admin/                     dashboard, orders, products, customers, enquiries, settings
+  cart/  checkout/  order/   full cart, checkout, order confirmation
   studio/                    dev-only product render studio / model test scene
 components/
   hero/Hero.tsx              scroll story overlay (GSAP ScrollTrigger + Lenis), loader, fallbacks
@@ -145,8 +168,11 @@ components/
   shop/  cart/  checkout/    catalogue, cards, quick view, drawer, fly-to-cart, checkout
   sections/                  gift sets, our craft, why wood, care guide, testimonials, contact
   layout/  ui/               navbar, footer, theme toggle, WhatsApp, buttons, modal, kolam motifs, marquee
-data/                        site config, products, categories & woods, testimonials
-lib/                         payments, pricing, orders, validation, scroll (Lenis), device tiers, GSAP
+data/                        site config, seed products, categories & woods, testimonials
+db/schema.sql                database schema (npm run db:setup)
+i18n/                        locales, typed message files (en/kn/hi), product translations
+lib/server/                  db pool, auth & sessions, catalogue, orders, settings, WhatsApp, admin queries
+lib/                         pricing, validation, scroll (Lenis), device tiers, GSAP
 store/                       Zustand: cart (persisted), theme (persisted), UI
 scripts/render-products.mjs  bakes product photos from the 3D models
 ```
@@ -168,6 +194,6 @@ scripts/render-products.mjs  bakes product photos from the 3D models
 
 ## Deploying
 
-The site deploys to Vercel (or any Node host) as is. Set the environment variables, then `npm run build`.
-`vercel.json` pins the framework to Next.js. Without Razorpay keys, production turns online payment off and
-points buyers to WhatsApp (set `PAYMENT_PROVIDER=mock` only to demo the flow).
+The site deploys to Vercel (or any Node host) as is. Add the environment variables from `.env.local` to the host
+(Vercel → Settings → Environment Variables), then deploy. Use the Supabase **pooler** URL: the direct database
+host is IPv6-only, which Vercel can't reach. `vercel.json` pins the framework to Next.js.

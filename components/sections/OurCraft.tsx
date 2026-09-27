@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
-import { site } from '@/data/site';
+import { useT } from '@/i18n/client';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Kolam, WoodShaving } from '@/components/ui/Kolam';
 import { cn } from '@/lib/utils';
@@ -195,45 +195,13 @@ function CrateArt() {
   );
 }
 
-const STEPS = [
-  {
-    n: '01',
-    title: 'Choosing the wood',
-    body: 'We pick air-seasoned teak, sheesham, neem and acacia with straight, tight grain, and reject anything with cracks, knots in the wrong place or too much moisture.',
-    chip: 'Seasoned, never green',
-    Art: RingsArt,
-  },
-  {
-    n: '02',
-    title: 'Turning on the lathe',
-    body: 'The billet spins on the lathe while the turner shapes it with a gouge, pass after pass, feeling the profile by hand. No two belans come off quite the same.',
-    chip: 'Shaped by hand and eye',
-    Art: LatheArt,
-  },
-  {
-    n: '03',
-    title: 'Carving & sanding',
-    body: 'Spatulas, spoons and churner heads are carved, then everything is sanded through the grits until the surface is smooth enough that dough and food slide off.',
-    chip: 'Sanded to 400 grit',
-    Art: SandArt,
-  },
-  {
-    n: '04',
-    title: 'The oil finish',
-    body: 'We rub in food-grade, cold-pressed coconut oil (and beeswax for boards and boxes) and let it soak in. No lacquer, no varnish, nothing synthetic.',
-    chip: 'Coconut oil & beeswax',
-    Art: OilArt,
-  },
-  {
-    n: '05',
-    title: 'Packed with care',
-    body: 'Every order is checked, wrapped in paper and bedded in wood wool. Gift sets travel in our branded crate, ready to hand over.',
-    chip: 'Ships across India',
-    Art: CrateArt,
-  },
-];
+/** Illustrations for the five making steps; their text lives in i18n (`t.sections.craft.steps`). */
+const STEP_ART = [RingsArt, LatheArt, SandArt, OilArt, CrateArt];
 
-function StepCard({ step, className }: { step: (typeof STEPS)[number]; className?: string }) {
+type Step = { n: string; title: string; body: string; chip: string; Art: () => React.JSX.Element };
+
+function StepCard({ step, className }: { step: Step; className?: string }) {
+  const t = useT();
   const { Art } = step;
   return (
     <article className={cn('group relative flex flex-col overflow-hidden rounded-[2rem] border border-line bg-card p-6 shadow-soft sm:p-8', className)}>
@@ -246,7 +214,7 @@ function StepCard({ step, className }: { step: (typeof STEPS)[number]; className
       <div className="relative h-44 rounded-[1.4rem] bg-[radial-gradient(circle_at_50%_40%,#fff6e2,#f6dcc0)] p-3 dark:bg-[radial-gradient(circle_at_50%_40%,#3a2618,#1f140d)]">
         <Art />
       </div>
-      <p className="mt-6 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-wood">Step {step.n}</p>
+      <p className="mt-6 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-wood">{t.sections.craft.step(step.n)}</p>
       <h3 className="mt-1.5 text-2xl font-semibold text-fg sm:text-[1.75rem]">{step.title}</h3>
       <p className="mt-3 leading-relaxed text-muted">{step.body}</p>
       <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface-2/80 px-3 py-1 text-xs font-semibold text-fg">
@@ -258,6 +226,9 @@ function StepCard({ step, className }: { step: (typeof STEPS)[number]; className
 }
 
 export function OurCraft() {
+  const t = useT();
+  const c = t.sections.craft;
+  const steps: Step[] = c.steps.map((st, i) => ({ ...st, n: `0${i + 1}`, Art: STEP_ART[i] }));
   const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -314,13 +285,13 @@ export function OurCraft() {
           <SectionHeading
             id="craft-title"
             align="left"
-            eyebrow="Our craft"
-            title="From a log to"
-            accent="your kitchen"
-            subtitle="Padmavathi Enterprises is a small workshop of wood turners and carvers. We make the tools Indian kitchens have always relied on, the belan, the chakla, the mathani, the thuruvani, the way they have always been made: by hand, from solid wood, finished with oil."
+            eyebrow={c.eyebrow}
+            title={c.title}
+            accent={c.accent}
+            subtitle={c.subtitle}
           />
           <ul className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-            {site.stats.map((s, i) => (
+            {c.stats.map((s, i) => (
               <motion.li
                 key={s.label}
                 initial={{ opacity: 0, x: 40 }}
@@ -341,8 +312,8 @@ export function OurCraft() {
       <div ref={pinRef} className="relative overflow-hidden lg:h-[100svh]">
         <div className="container-page relative hidden pt-24 lg:block">
           <div className="flex items-center justify-between">
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-wood">The making, step by step</p>
-            <p className="text-xs text-muted">Keep scrolling →</p>
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-wood">{c.making}</p>
+            <p className="text-xs text-muted">{c.keepScrolling}</p>
           </div>
           <div className="relative mt-4 h-8">
             <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-line" />
@@ -360,15 +331,15 @@ export function OurCraft() {
           ref={trackRef}
           className="container-page flex flex-col gap-6 pb-16 pt-8 [perspective:1400px] lg:w-max lg:max-w-none lg:flex-row lg:gap-8 lg:pl-[max(2rem,calc((100vw-1280px)/2+2rem))] lg:pr-[20vw] lg:pt-10"
         >
-          {STEPS.map((s) => (
+          {steps.map((s) => (
             <div key={s.n} data-step className="lg:w-[26rem] lg:shrink-0">
               <StepCard step={s} className="h-full" />
             </div>
           ))}
           <div data-step className="flex flex-col items-center justify-center gap-4 rounded-[2rem] border border-dashed border-line-strong p-10 text-center lg:w-[22rem] lg:shrink-0">
             <WoodShaving className="h-16 w-20 animate-sway" />
-            <p className="font-display text-2xl font-semibold text-fg">…and then it’s yours.</p>
-            <p className="text-sm text-muted">Cared for with a little oil, a wooden tool outlives every non-stick pan in the kitchen.</p>
+            <p className="font-display text-2xl font-semibold text-fg">{c.endTitle}</p>
+            <p className="text-sm text-muted">{c.endBody}</p>
           </div>
         </div>
       </div>

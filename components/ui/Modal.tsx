@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion, useDragControls, type PanInfo } from 'framer-motion';
+import { useT } from '@/i18n/client';
 import { X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
@@ -92,7 +93,9 @@ export function Modal({ open, onClose, labelledBy, children, className, variant 
   );
 }
 
-export function CloseButton({ onClick, label = 'Close', className }: { onClick: () => void; label?: string; className?: string }) {
+export function CloseButton({ onClick, label, className }: { onClick: () => void; label?: string; className?: string }) {
+  const t = useT();
+  label ??= t.common.close;
   return (
     <button
       type="button"

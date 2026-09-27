@@ -2,15 +2,20 @@
 
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
-import { testimonials } from '@/data/testimonials';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Kolam } from '@/components/ui/Kolam';
 import { cn } from '@/lib/utils';
+import { useI18n } from '@/i18n/client';
+import { localizeReview, type Review } from '@/lib/reviews';
 
 const AVATAR = ['#b9d3b1', '#facc15', '#e2a867', '#7fbf95', '#fde68a', '#c68642'];
 
-export function Testimonials() {
+/** Reviews come from the `reviews` table (managed in /admin/reviews). */
+export function Testimonials({ reviews }: { reviews: Review[] }) {
+  const { t, locale } = useI18n();
+  const r = t.sections.reviews;
+  const testimonials = useMemo(() => reviews.map((x) => localizeReview(x, locale)), [reviews, locale]);
   const reduce = useReducedMotion();
   const [[index, dir], setState] = useState<[number, number]>([0, 1]);
   const [paused, setPaused] = useState(false);
@@ -19,17 +24,18 @@ export function Testimonials() {
   const go = useCallback((next: number, d: number) => setState([((next % n) + n) % n, d]), [n]);
 
   useEffect(() => {
-    if (reduce || paused) return;
+    if (reduce || paused || n < 2) return;
     const timer = window.setTimeout(() => go(index + 1, 1), 6500);
     return () => window.clearTimeout(timer);
-  }, [index, paused, reduce, go]);
+  }, [index, paused, reduce, go, n]);
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -60 || info.velocity.x < -400) go(index + 1, 1);
     else if (info.offset.x > 60 || info.velocity.x > 400) go(index - 1, -1);
   };
 
-  const item = testimonials[index];
+  if (n === 0) return null;
+  const item = testimonials[index] ?? testimonials[0];
   const peek = [testimonials[(index + n - 1) % n], testimonials[(index + 1) % n]];
 
   return (
@@ -40,10 +46,10 @@ export function Testimonials() {
       <div className="container-page relative">
         <SectionHeading
           id="reviews-title"
-          eyebrow="Kind words"
-          title="Loved in kitchens"
-          accent="across India"
-          subtitle="From first rotis to wedding return gifts, here’s what families say about their Padmavathi pieces."
+          eyebrow={r.eyebrow}
+          title={r.title}
+          accent={r.accent}
+          subtitle={r.subtitle}
         />
         <div
           className="relative mx-auto mt-14 max-w-3xl"
@@ -90,7 +96,7 @@ export function Testimonials() {
                     </linearGradient>
                   </defs>
                 </svg>
-                <div className="flex gap-1" role="img" aria-label={`Rated ${item.rating} out of 5`}>
+                <div className="flex gap-1" role="img" aria-label={r.rated(item.rating)}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <motion.span key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15 + i * 0.06, type: 'spring', stiffness: 500, damping: 15 }}>
                       <Star size={18} className={i < item.rating ? 'fill-[#facc15] text-[#e0a800]' : 'text-line-strong'} aria-hidden="true" />
@@ -119,18 +125,18 @@ export function Testimonials() {
             <button
               type="button"
               onClick={() => go(index - 1, -1)}
-              aria-label="Previous review"
+              aria-label={r.prev}
               className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface text-fg transition-colors hover:border-honey"
             >
               <ChevronLeft size={18} />
             </button>
             <div className="flex">
-              {testimonials.map((t, i) => (
+              {testimonials.map((rv, i) => (
                 <button
-                  key={t.id}
+                  key={rv.id}
                   type="button"
                   onClick={() => go(i, i > index ? 1 : -1)}
-                  aria-label={`Show review ${i + 1} of ${n}`}
+                  aria-label={r.show(i + 1, n)}
                   aria-current={i === index}
                   className="group grid h-10 place-items-center px-1"
                 >
@@ -156,14 +162,12 @@ export function Testimonials() {
             <button
               type="button"
               onClick={() => go(index + 1, 1)}
-              aria-label="Next review"
+              aria-label={r.next}
               className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface text-fg transition-colors hover:border-honey"
             >
               <ChevronRight size={18} />
             </button>
           </div>
-          {/* TODO(shop owner): remove this line once the sample reviews in data/testimonials.ts are replaced with real ones */}
-          <p className="mt-4 text-center text-xs text-muted/80">Sample reviews shown for layout. Replace with real customer reviews.</p>
         </div>
       </div>
     </section>

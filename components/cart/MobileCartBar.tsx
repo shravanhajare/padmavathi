@@ -3,10 +3,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { resolveLines, useCartStore } from '@/store/cart';
+import { useEffect, useState } from 'react';
 import { useUIStore } from '@/store/ui';
-import { formatINR, pluralize } from '@/lib/utils';
+import { useT } from '@/i18n/client';
+import { useCart } from './useCart';
+import { formatINR } from '@/lib/utils';
 
 /** True once the home hero has scrolled past; the hero has its own Shop Now button at the bottom. */
 function usePastHero(onHome: boolean) {
@@ -37,10 +38,9 @@ function usePastHero(onHome: boolean) {
 /** Phone-only bar pinned to the bottom of the screen whenever the cart has something in it. */
 export function MobileCartBar() {
   const pathname = usePathname();
-  const rawLines = useCartStore((s) => s.lines);
-  const lines = useMemo(() => resolveLines(rawLines), [rawLines]);
-  const count = lines.reduce((n, l) => n + l.qty, 0);
-  const amount = formatINR(lines.reduce((n, l) => n + l.lineTotal, 0));
+  const t = useT();
+  const { count, totals } = useCart();
+  const amount = formatINR(totals.subtotal);
   const cartOpen = useUIStore((s) => s.cartOpen);
   const quickView = useUIStore((s) => s.quickViewId);
   const openCart = useUIStore((s) => s.openCart);
@@ -66,7 +66,7 @@ export function MobileCartBar() {
           <button
             type="button"
             onClick={openCart}
-            aria-label={`Open cart: ${pluralize(count, 'piece')}, ${amount}`}
+            aria-label={t.orders.cart.barOpen(t.common.pieces(count), amount)}
             className="flex h-[3.75rem] w-full items-center gap-3 btn-wood btn-wood-teak rounded-2xl pl-2 pr-4 text-left active:scale-[0.98]"
           >
             <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#fff1d6]/15 ring-1 ring-inset ring-[#fff1d6]/25">
@@ -79,15 +79,15 @@ export function MobileCartBar() {
                 className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-[linear-gradient(135deg,#fde68a,#facc15)] px-1 text-[0.68rem] font-bold text-[#5c3a21]"
                 aria-hidden="true"
               >
-                {count > 99 ? '99+' : count}
+                {count > 999 ? '999+' : count}
               </motion.span>
             </span>
             <span className="min-w-0 flex-1 leading-tight">
-              <span className="block truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#fff4e2]/75">Your cart</span>
-              <span className="block truncate text-[0.95rem] font-semibold tabular-nums">{pluralize(count, 'piece')} · {amount}</span>
+              <span className="block truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#fff4e2]/75">{t.orders.cart.barLabel}</span>
+              <span className="block truncate text-[0.95rem] font-semibold tabular-nums">{t.common.pieces(count)} · {amount}</span>
             </span>
             <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold">
-              View cart <ArrowRight size={16} aria-hidden="true" />
+              {t.orders.cart.viewCart} <ArrowRight size={16} aria-hidden="true" />
             </span>
           </button>
         </motion.div>

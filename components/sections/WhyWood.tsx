@@ -4,6 +4,7 @@ import { motion, type Variants } from 'framer-motion';
 import { useRef, type PointerEvent, type ReactNode } from 'react';
 import { SplitReveal } from '@/components/ui/SectionHeading';
 import { KolamBorder } from '@/components/ui/Kolam';
+import { useT } from '@/i18n/client';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const draw: Variants = { rest: { pathLength: 0.001, opacity: 0.4 }, show: { pathLength: 1, opacity: 1, transition: { duration: 1.2, ease: EASE } } };
@@ -86,16 +87,11 @@ const ICONS: Record<string, ReactNode> = {
   ),
 };
 
-const REASONS = [
-  { id: 'chemical', title: 'Chemical-free', body: 'No lacquer, varnish or synthetic polish. Just wood and food-grade coconut oil, so nothing leaches into hot food.' },
-  { id: 'food', title: 'Naturally food safe', body: 'Wood doesn’t react with tamarind, lemon or salt, and neem is naturally antibacterial. Perfect for pickles and tadka.' },
-  { id: 'durable', title: 'Built for decades', body: 'Dense, seasoned hardwood turned from a single piece. With a little oil now and then, it outlives the kitchen it moves into.' },
-  { id: 'eco', title: 'Kind to the planet', body: 'Plastic-free, biodegradable and made from responsibly sourced timber, with offcuts turned into spoons and shavings into compost.' },
-  { id: 'gentle', title: 'Gentle on cookware', body: 'Wooden spatulas and ladles never scratch non-stick, cast iron or kadai surfaces, and stay cool in your hand.' },
-  { id: 'tradition', title: 'Tradition in every piece', body: 'The same shapes your grandmother trusted, the belan, the mathani, the thuruvani, made the way they always have been.' },
-];
+const REASON_IDS = ['chemical', 'food', 'durable', 'eco', 'gentle', 'tradition'] as const;
 
 export function WhyWood() {
+  const t = useT();
+  const w = t.sections.why;
   const ref = useRef<HTMLElement>(null);
   const onMove = (e: PointerEvent<HTMLElement>) => {
     const el = ref.current;
@@ -126,18 +122,18 @@ export function WhyWood() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[#f1c48d]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#b9d3b1]" aria-hidden="true" /> Why wood
+            <span className="h-1.5 w-1.5 rounded-full bg-[#b9d3b1]" aria-hidden="true" /> {w.eyebrow}
           </motion.span>
           <h2 id="why-title" className="max-w-3xl text-[2.25rem] font-semibold leading-[1.06] sm:text-5xl lg:text-[3.5rem]">
-            <SplitReveal text="Better for your food," /> <SplitReveal text="your pans and the planet" delay={0.2} wordClassName="italic text-[#f1c48d] pr-1" />
+            <SplitReveal text={w.title} /> <SplitReveal text={w.accent} delay={0.2} wordClassName="italic text-[#f1c48d] pr-1" />
           </h2>
           <KolamBorder className="h-4 w-56 text-[#e2a867]/70" loops={10} />
         </div>
 
         <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {REASONS.map((r, i) => (
+          {REASON_IDS.map((id, i) => (
             <motion.li
-              key={r.id}
+              key={id}
               initial="rest"
               whileInView="show"
               whileHover="show"
@@ -154,10 +150,10 @@ export function WhyWood() {
               >
                 <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgb(63_122_90/0.25),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true" />
                 <span className="grid h-16 w-16 place-items-center rounded-2xl bg-[linear-gradient(135deg,rgb(233_184_119/0.25),rgb(198_134_66/0.08))] text-[#f1c48d] ring-1 ring-[#e2a867]/30">
-                  {ICONS[r.id]}
+                  {ICONS[id]}
                 </span>
-                <h3 className="mt-6 text-2xl font-semibold text-[#fbefe1]">{r.title}</h3>
-                <p className="mt-2.5 leading-relaxed text-[#e3cbb3]">{r.body}</p>
+                <h3 className="mt-6 text-2xl font-semibold text-[#fbefe1]">{w.reasons[id].title}</h3>
+                <p className="mt-2.5 leading-relaxed text-[#e3cbb3]">{w.reasons[id].body}</p>
               </motion.div>
             </motion.li>
           ))}

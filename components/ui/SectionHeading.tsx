@@ -21,17 +21,17 @@ export function SplitReveal({
   delay?: number;
   stagger?: number;
 }) {
-  // MotionConfig reducedMotion="user" snaps these transforms for people who ask for less motion
+  // MotionConfig reducedMotion="user" snaps these transforms for people who ask for less motion.
+  // The in-view check lives on the unclipped wrapper: each word starts pushed fully inside its
+  // overflow mask, so observing the word itself never fires for short words like "to".
   const words = text.split(' ');
   return (
-    <span className={className}>
+    <motion.span className={className} initial="hidden" whileInView="shown" viewport={{ once: true, margin: '-60px' }}>
       {words.map((w, i) => (
         <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.12em] align-bottom">
           <motion.span
             className={cn('inline-block', wordClassName)}
-            initial={{ y: '105%', rotate: 4 }}
-            whileInView={{ y: '0%', rotate: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            variants={{ hidden: { y: '105%', rotate: 4 }, shown: { y: '0%', rotate: 0 } }}
             transition={{ duration: 0.9, delay: delay + i * stagger, ease: EASE }}
           >
             {w}
@@ -39,7 +39,7 @@ export function SplitReveal({
           {i < words.length - 1 && ' '}
         </span>
       ))}
-    </span>
+    </motion.span>
   );
 }
 

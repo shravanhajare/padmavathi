@@ -5,6 +5,7 @@ import { AnimatePresence, animate, motion, useMotionValue, useTransform, type Mo
 import { ShoppingCart, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useUIStore, type CartToast, type Flyer } from '@/store/ui';
+import { useT } from '@/i18n/client';
 
 interface Path {
   size: number;
@@ -143,6 +144,7 @@ function LandingBurst({ at, onDone }: { at: { x: number; y: number }; onDone: ()
 }
 
 function ToastCard({ toast }: { toast: CartToast }) {
+  const t = useT();
   const dismiss = useUIStore((s) => s.dismissToast);
   const openCart = useUIStore((s) => s.openCart);
   const [paused, setPaused] = useState(false);
@@ -167,7 +169,7 @@ function ToastCard({ toast }: { toast: CartToast }) {
           <Image src={toast.image} alt="" fill sizes="56px" className="object-contain p-1" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[0.64rem] font-bold uppercase tracking-[0.2em] text-wood">Added to your cart</p>
+          <p className="text-[0.64rem] font-bold uppercase tracking-[0.2em] text-wood">{t.orders.cart.toastTitle}</p>
           <p className="truncate font-display text-[1.02rem] font-semibold text-fg">{toast.name}</p>
           <p className="text-xs text-muted">
             {toast.qty} × {toast.variantLabel}
@@ -181,13 +183,13 @@ function ToastCard({ toast }: { toast: CartToast }) {
           }}
           className="inline-flex shrink-0 items-center gap-1.5 btn-wood btn-wood-teak rounded-full px-3 py-2 text-xs font-semibold"
         >
-          <ShoppingCart size={13} aria-hidden="true" /> View cart
+          <ShoppingCart size={13} aria-hidden="true" /> {t.orders.cart.viewCart}
         </button>
       </div>
       <button
         type="button"
         onClick={() => dismiss(toast.id)}
-        aria-label="Dismiss"
+        aria-label={t.common.dismiss}
         className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-fg"
       >
         <X size={13} />

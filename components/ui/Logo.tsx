@@ -1,5 +1,8 @@
+'use client';
+
 import { useId } from 'react';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/client';
 
 /**
  * The Padmavathi mark: a lotus (padma) whose three petals are wooden spoons.
@@ -44,22 +47,24 @@ export function LogoMark({ className, title }: { className?: string; title?: str
 }
 
 export function Logo({ compact = false, className }: { compact?: boolean; className?: string }) {
+  const t = useT();
+  const b = t.common.brand;
   return (
     <span className={cn('flex items-center gap-2.5', className)}>
       <LogoMark className={cn('shrink-0 transition-all duration-500', compact ? 'h-9 w-9' : 'h-10 w-10 sm:h-11 sm:w-11')} />
       <span className="flex flex-col leading-none">
         <span className="font-display text-[1.15rem] font-bold tracking-[-0.01em] text-fg sm:text-[1.3rem]">
-          Padmavathi <span className="hidden text-wood sm:inline">Enterprises</span>
+          {b.short} <span className="hidden text-wood sm:inline">{b.word2}</span>
         </span>
         {/* phones: a short second line instead of the long tagline */}
-        <span className="mt-1 text-[0.56rem] font-semibold uppercase tracking-[0.3em] text-wood sm:hidden">Enterprises</span>
+        <span className="mt-1 text-[0.56rem] font-semibold uppercase tracking-[0.3em] text-wood sm:hidden">{b.word2}</span>
         <span
           className={cn(
             'mt-1 hidden overflow-hidden whitespace-nowrap text-[0.62rem] font-medium uppercase tracking-[0.2em] text-muted transition-all duration-500 sm:block',
             compact ? 'max-h-0 opacity-0' : 'max-h-4 opacity-100',
           )}
         >
-          – Handcrafted Wooden Kitchenware –
+          – {b.tagline} –
         </span>
       </span>
     </span>

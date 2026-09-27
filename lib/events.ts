@@ -12,7 +12,7 @@ export function selectShopCategory(id: Category['id']) {
 /** Lets a CTA (gift sets, footer) preselect the contact form's enquiry type. */
 export const ENQUIRY_EVENT = 'pe:enquiry';
 
-export type EnquiryKind = 'retail' | 'bulk' | 'wholesale' | 'custom';
+export type EnquiryKind = 'bulk' | 'wholesale' | 'gifting' | 'custom';
 
 export function selectEnquiryType(kind: EnquiryKind) {
   window.dispatchEvent(new CustomEvent<EnquiryKind>(ENQUIRY_EVENT, { detail: kind }));

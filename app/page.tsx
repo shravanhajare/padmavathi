@@ -8,30 +8,37 @@ import { Testimonials } from '@/components/sections/Testimonials';
 import { Contact } from '@/components/sections/Contact';
 import { Marquee } from '@/components/ui/Marquee';
 import { site } from '@/data/site';
-import { lowestPrice, products } from '@/data/products';
+import { lowestPrice } from '@/lib/catalog';
+import type { Product } from '@/data/types';
+import { getCatalog } from '@/lib/server/catalog';
+import { getReviews } from '@/lib/server/reviews';
+import { getSettings } from '@/lib/server/settings';
+import { telHref, type BusinessInfo } from '@/lib/business';
+import { getT } from '@/i18n/server';
+import { headers } from 'next/headers';
 
-function StructuredData() {
+function StructuredData({ products, business: b, nonce }: { products: Product[]; business: BusinessInfo; nonce?: string }) {
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Store',
     name: site.name,
     description: site.description,
     url: site.url,
-    telephone: site.contact.phoneHref,
-    email: site.contact.email,
+    telephone: telHref(b.phone),
+    email: b.email,
     image: `${site.url}/opengraph-image`,
     priceRange: '₹₹',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: [site.address.line1, site.address.line2].filter(Boolean).join(', '),
-      addressLocality: site.address.city,
-      addressRegion: site.address.state,
-      postalCode: site.address.pincode,
-      addressCountry: site.address.country,
+      streetAddress: [b.address.line1, b.address.line2].filter(Boolean).join(', '),
+      addressLocality: b.address.city,
+      addressRegion: b.address.state,
+      postalCode: b.address.pincode,
+      addressCountry: 'IN',
     },
     areaServed: { '@type': 'Country', name: 'India' },
     openingHours: site.openingHoursSpec,
-    sameAs: Object.values(site.socials),
+    sameAs: Object.values(b.socials).filter(Boolean),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Handcrafted wooden kitchenware',
@@ -44,24 +51,25 @@ function StructuredData() {
       })),
     },
   };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+  return <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [t, entries, reviews, settings, nonce] = await Promise.all([getT(), getCatalog(), getReviews(), getSettings(), headers().then((h) => h.get('x-nonce') ?? undefined)]);
   return (
     <>
-      <StructuredData />
+      <StructuredData products={entries.map((e) => e.product)} business={settings.business} nonce={nonce} />
       <Hero />
       <Marquee
         className="border-y border-line bg-surface-2/60 py-5 text-wood"
-        items={['Teak', 'Sheesham', 'Neem', 'Acacia', 'Hand-turned', 'Food-safe', 'No lacquer', 'Coconut-oil finish', 'Made in India']}
+        items={[...t.home.marquee]}
       />
       <Shop />
       <GiftSets />
       <OurCraft />
       <WhyWood />
       <CareGuide />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <Contact />
     </>
   );

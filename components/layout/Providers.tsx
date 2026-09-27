@@ -7,6 +7,7 @@ import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { setLenis } from '@/lib/scroll';
 import { useThemeStore } from '@/store/theme';
 import { useCartStore } from '@/store/cart';
+import { useMinQty } from './AppData';
 
 /** Keeps <html data-theme> in sync with the store and the OS preference. */
 function ThemeSync() {
@@ -87,9 +88,15 @@ function SmoothScroll() {
 }
 
 function StoreHydration() {
+  const minQty = useMinQty();
+  const [hydrated, setHydrated] = useState(false);
+  // read the saved cart before anything writes to the store: persist saves on every set()
   useEffect(() => {
-    useCartStore.persist.rehydrate();
+    Promise.resolve(useCartStore.persist.rehydrate()).then(() => setHydrated(true));
   }, []);
+  useEffect(() => {
+    if (hydrated) useCartStore.getState().setMinQty(minQty);
+  }, [hydrated, minQty]);
   return null;
 }
 

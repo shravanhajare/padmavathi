@@ -5,7 +5,9 @@ import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useReducedM
 import { Box, Minus, Plus, Ruler, ShoppingCart } from 'lucide-react';
 import { forwardRef, useRef, useState, type PointerEvent, type RefObject } from 'react';
 import type { Product } from '@/data/types';
-import { useCartStore } from '@/store/cart';
+import { QTY_STEP, useCartStore } from '@/store/cart';
+import { useMinQty } from '@/components/layout/AppData';
+import { useT } from '@/i18n/client';
 import { useUIStore } from '@/store/ui';
 import { Kolam } from '@/components/ui/Kolam';
 import { AnimatedPrice, ProductBadges, VariantPicker, WoodChip, tintClasses, tintStyle, useAddToCart } from './parts';
@@ -23,9 +25,14 @@ function CartControl({
   sourceRef: RefObject<HTMLElement | null>;
   onAdd: (variantId: string, qty: number, el?: Element | null) => void;
 }) {
+  const t = useT();
+  const min = useMinQty();
   const key = `${product.id}:${variantId}`;
   const qty = useCartStore((s) => s.lines.find((l) => l.key === key)?.qty ?? 0);
   const setQty = useCartStore((s) => s.setQty);
+  const remove = useCartStore((s) => s.remove);
+  // stepping below the bulk minimum takes the line out of the cart
+  const less = () => (qty - QTY_STEP < min ? remove(key) : setQty(key, qty - QTY_STEP));
   const variant = product.variants.find((v) => v.id === variantId)!;
   return (
     <div className="relative flex h-10 w-full justify-end @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:min-w-[7.4rem]">
@@ -34,8 +41,8 @@ function CartControl({
           <motion.button
             key="add"
             type="button"
-            onClick={() => onAdd(variantId, 1, sourceRef.current)}
-            aria-label={`Add ${product.name}, ${variant.label}, to cart`}
+            onClick={() => onAdd(variantId, min, sourceRef.current)}
+            aria-label={t.catalog.card.addAria(product.name, variant.label, min)}
             initial={{ opacity: 0, scale: 0.7 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.7 }}
@@ -47,8 +54,12 @@ function CartControl({
             <span className="grid h-7 w-7 place-items-center rounded-full bg-[#fff1d6]/15 ring-1 ring-inset ring-[#fff1d6]/25 transition-transform duration-300 group-hover/add:-rotate-12 group-hover/add:scale-110 @min-[15rem]:h-8 @min-[15rem]:w-8">
               <ShoppingCart size={15} aria-hidden="true" />
             </span>
-            <span className="@min-[19rem]:hidden">Add</span>
-            <span className="hidden @min-[19rem]:inline">Add to cart</span>
+            <span className="@min-[19rem]:hidden">
+              {t.catalog.card.add} · {min}
+            </span>
+            <span className="hidden @min-[19rem]:inline">
+              {t.catalog.card.addToCart} · {min}
+            </span>
             <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/25 blur-md transition-all duration-700 group-hover/add:left-[130%]" aria-hidden="true" />
           </motion.button>
         ) : (
@@ -60,18 +71,18 @@ function CartControl({
             transition={{ type: 'spring', stiffness: 460, damping: 26 }}
             className="inline-flex h-10 w-full items-center justify-between btn-wood btn-wood-honey rounded-full p-1 @min-[15rem]:h-11 @min-[15rem]:w-auto @min-[15rem]:min-w-[8.2rem]"
             role="group"
-            aria-label={`${product.name}, ${variant.label}: ${qty} in cart`}
+            aria-label={t.catalog.card.inCartAria(product.name, variant.label, qty)}
           >
             <motion.button
               type="button"
               whileTap={{ scale: 0.85 }}
-              onClick={() => setQty(key, qty - 1)}
-              aria-label={qty === 1 ? `Remove ${product.name} from cart` : `Remove one ${product.name}`}
+              onClick={less}
+              aria-label={qty - QTY_STEP < min ? t.catalog.card.removeAria(product.name) : t.catalog.card.less(product.name, QTY_STEP)}
               className="grid h-8 w-8 place-items-center rounded-full bg-[#fff8ea]/55 [text-shadow:none] hover:bg-[#fff8ea] @min-[15rem]:h-9 @min-[15rem]:w-9"
             >
               <Minus size={15} />
             </motion.button>
-            <span className="relative w-9 overflow-hidden text-center font-display text-lg font-semibold tabular-nums" aria-live="polite">
+            <span className="relative w-11 overflow-hidden text-center font-display text-lg font-semibold tabular-nums" aria-live="polite">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span
                   key={qty}
@@ -88,8 +99,8 @@ function CartControl({
             <motion.button
               type="button"
               whileTap={{ scale: 0.85 }}
-              onClick={() => onAdd(variantId, 1, sourceRef.current)}
-              aria-label={`Add one more ${product.name}`}
+              onClick={() => onAdd(variantId, QTY_STEP, sourceRef.current)}
+              aria-label={t.catalog.card.more(product.name, QTY_STEP)}
               className="grid h-8 w-8 place-items-center btn-wood btn-wood-teak rounded-full @min-[15rem]:h-9 @min-[15rem]:w-9"
             >
               <Plus size={15} />
@@ -107,11 +118,13 @@ interface ProductCardProps {
 }
 
 export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function ProductCard({ product, index }, ref) {
+  const t = useT();
+  const min = useMinQty();
   const reduce = useReducedMotion();
   const [variantId, setVariantId] = useState(product.variants[0].id);
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const openQuickView = useUIStore((s) => s.openQuickView);
-  const { addToCart, pulse } = useAddToCart(product);
+  const { addToCart, pulse, lastQty } = useAddToCart(product);
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
 
@@ -186,7 +199,7 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
               type="button"
               onClick={() => openQuickView(product.id)}
               className="absolute inset-0 z-20 rounded-[1.1rem] @min-[15rem]:rounded-[1.5rem]"
-              aria-label={`Quick view ${product.name} in 3D`}
+              aria-label={t.catalog.card.quickView(product.name)}
             />
             <motion.div ref={imgRef} className="pointer-events-none absolute inset-x-[4%] bottom-[6%] top-[3%] z-10" style={{ x: ix, y: iy }}>
               <div className="relative h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/card:-translate-y-3 group-hover/card:-rotate-2 group-hover/card:scale-[1.06]">
@@ -221,7 +234,7 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
                   transition={{ duration: 0.9, ease: 'easeOut' }}
                   aria-hidden="true"
                 >
-                  +1
+                  +{lastQty}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -230,7 +243,7 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
               <Box size={16} aria-hidden="true" />
             </span>
             <span className="pointer-events-none absolute bottom-[16%] left-1/2 z-30 hidden -translate-x-1/2 scale-90 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/90 px-3.5 py-1.5 text-xs font-semibold text-[#2e1d12] opacity-0 shadow-lift backdrop-blur transition-all duration-300 group-hover/card:scale-100 group-hover/card:opacity-100 @min-[15rem]:inline-flex">
-              <Box size={14} aria-hidden="true" /> View in 3D
+              <Box size={14} aria-hidden="true" /> {t.catalog.card.view3d}
             </span>
           </div>
 
@@ -254,7 +267,9 @@ export const ProductCard = forwardRef<HTMLElement, ProductCardProps>(function Pr
             <div className="mt-auto flex flex-col gap-2 pt-3 @min-[15rem]:flex-row @min-[15rem]:items-end @min-[15rem]:justify-between @min-[15rem]:pt-4">
               <div className="leading-none">
                 <AnimatedPrice value={variant.price} className="font-display text-[1.3rem] font-semibold text-fg @min-[15rem]:text-[1.6rem]" />
-                <span className="mt-1 block text-[0.68rem] text-muted">+ GST</span>
+                <span className="mt-1 block text-[0.68rem] text-muted">
+                  {t.common.plusGst} · {t.common.minOrder(min)}
+                </span>
               </div>
               <CartControl product={product} variantId={variantId} sourceRef={imgRef} onAdd={addToCart} />
             </div>

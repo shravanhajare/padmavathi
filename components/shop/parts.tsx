@@ -5,6 +5,8 @@ import { ChevronDown, Leaf, ShieldCheck, Sparkles, Star, Gift, Hand } from 'luci
 import { useRef, useState, type CSSProperties } from 'react';
 import type { Product, ProductTag, WoodId } from '@/data/types';
 import { categoryById, woodById } from '@/data/categories';
+import { useMinQty } from '@/components/layout/AppData';
+import { useT } from '@/i18n/client';
 import { useCartStore } from '@/store/cart';
 import { useUIStore } from '@/store/ui';
 import { cn, formatINR } from '@/lib/utils';
@@ -17,17 +19,19 @@ export function tintStyle(product: Pick<Product, 'category'>): CSSProperties {
 export const tintClasses =
   'bg-[radial-gradient(circle_at_50%_38%,var(--ta)_0%,var(--tb)_100%)] dark:bg-[radial-gradient(circle_at_50%_38%,var(--tda)_0%,var(--tdb)_100%)]';
 
-const BADGES: Partial<Record<ProductTag, { label: string; cls: string; Icon: typeof Star }>> = {
-  bestseller: { label: 'Bestseller', cls: 'bg-[#2c5a42] text-white', Icon: Star },
-  new: { label: 'New', cls: 'bg-[#5c3a21] text-[#fff7e0]', Icon: Sparkles },
-  gift: { label: 'Gift', cls: 'bg-[#facc15] text-[#5c3a21]', Icon: Gift },
-  handmade: { label: 'Handmade', cls: 'bg-white/90 text-[#5c3a21] ring-1 ring-[#c68642]/40', Icon: Hand },
-  'food-safe': { label: 'Food-safe', cls: 'bg-white/90 text-[#2f7d3a] ring-1 ring-[#2f7d3a]/30', Icon: ShieldCheck },
+const BADGES: Partial<Record<ProductTag, { cls: string; Icon: typeof Star }>> = {
+  bestseller: { cls: 'bg-[#2c5a42] text-white', Icon: Star },
+  new: { cls: 'bg-[#5c3a21] text-[#fff7e0]', Icon: Sparkles },
+  gift: { cls: 'bg-[#facc15] text-[#5c3a21]', Icon: Gift },
+  handmade: { cls: 'bg-white/90 text-[#5c3a21] ring-1 ring-[#c68642]/40', Icon: Hand },
+  'food-safe': { cls: 'bg-white/90 text-[#2f7d3a] ring-1 ring-[#2f7d3a]/30', Icon: ShieldCheck },
 };
+type BadgeTag = keyof typeof BADGES & keyof ReturnType<typeof useT>['catalog']['badges'];
 
 /** Up to `max` badges, most important first. `fluid` hides extras on narrow cards (container query). */
 export function ProductBadges({ product, className, max = 2, fluid = false }: { product: Product; className?: string; max?: number; fluid?: boolean }) {
-  const order: ProductTag[] = ['bestseller', 'new', 'gift', 'handmade', 'food-safe'];
+  const t = useT();
+  const order: BadgeTag[] = ['bestseller', 'new', 'gift', 'handmade', 'food-safe'];
   const list = order.filter((t) => product.tags.includes(t)).slice(0, max);
   if (!list.length) return null;
   return (
@@ -44,7 +48,7 @@ export function ProductBadges({ product, className, max = 2, fluid = false }: { 
             )}
           >
             <b.Icon size={11} aria-hidden="true" />
-            {b.label}
+            {t.catalog.badges[tag]}
           </span>
         );
       })}
@@ -54,31 +58,34 @@ export function ProductBadges({ product, className, max = 2, fluid = false }: { 
 
 /** "Handmade · Food-safe" trust line with icons. */
 export function TrustLine({ className }: { className?: string }) {
+  const t = useT();
   return (
     <p className={cn('flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-medium text-muted', className)}>
       <span className="inline-flex items-center gap-1">
-        <Hand size={12} className="text-honey" aria-hidden="true" /> Handmade
+        <Hand size={12} className="text-honey" aria-hidden="true" /> {t.catalog.trust.handmade}
       </span>
       <span className="inline-flex items-center gap-1">
-        <ShieldCheck size={12} className="text-leaf" aria-hidden="true" /> Food-safe
+        <ShieldCheck size={12} className="text-leaf" aria-hidden="true" /> {t.catalog.trust.foodSafe}
       </span>
       <span className="inline-flex items-center gap-1">
-        <Leaf size={12} className="text-leaf" aria-hidden="true" /> No lacquer
+        <Leaf size={12} className="text-leaf" aria-hidden="true" /> {t.catalog.trust.noLacquer}
       </span>
     </p>
   );
 }
 
 export function WoodChip({ wood, className }: { wood: WoodId; className?: string }) {
+  const t = useT();
   const w = woodById[wood];
+  const label = t.catalog.woods[wood];
   return (
-    <span className={cn('inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2/70 px-2 py-0.5 text-[0.68rem] font-semibold text-fg', className)} title={w.note}>
+    <span className={cn('inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2/70 px-2 py-0.5 text-[0.68rem] font-semibold text-fg', className)} title={label.note}>
       <span
         aria-hidden="true"
         className="h-2.5 w-2.5 rounded-full ring-1 ring-black/10"
         style={{ background: `repeating-linear-gradient(100deg, ${w.swatch[0]} 0 3px, ${w.swatch[1]} 3px 4px)` }}
       />
-      {w.label}
+      {label.label}
     </span>
   );
 }
@@ -97,7 +104,8 @@ export function VariantPicker({
   /** Inside a card container: a compact dropdown when the card is narrow, chips when there's room. */
   fluid?: boolean;
 }) {
-  const label = `Choose a size for ${product.name}`;
+  const t = useT();
+  const label = t.catalog.chooseSize(product.name);
   if (product.variants.length < 2) {
     return <p className={cn('font-semibold text-muted', size === 'sm' ? 'text-[0.72rem]' : 'text-sm')}>{product.variants[0].label}</p>;
   }
@@ -177,10 +185,13 @@ export function useAddToCart(product: Product) {
   const bumpCart = useUIStore((s) => s.bumpCart);
   const pushToast = useUIStore((s) => s.pushToast);
   const reduce = useReducedMotion();
+  const min = useMinQty();
   const [added, setAdded] = useState(false);
   const [pulse, setPulse] = useState(0);
+  const [lastQty, setLastQty] = useState(0);
   const timer = useRef<number>(0);
-  const addToCart = (variantId: string, qty = 1, fromEl?: Element | null) => {
+  /** Adds `qty` (the bulk minimum when omitted) and plays the fly-to-cart animation. */
+  const addToCart = (variantId: string, qty = min, fromEl?: Element | null) => {
     const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
     add(product.id, variant.id, qty);
     const toast = { name: product.name, variantLabel: variant.label, image: product.image, qty };
@@ -190,9 +201,10 @@ export function useAddToCart(product: Product) {
       pushToast(toast);
     }
     setAdded(true);
+    setLastQty(qty);
     setPulse((n) => n + 1);
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setAdded(false), 1600);
   };
-  return { addToCart, added, pulse };
+  return { addToCart, added, pulse, lastQty };
 }

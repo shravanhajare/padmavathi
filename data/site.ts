@@ -1,9 +1,7 @@
 /**
- * Shop-wide configuration. Everything the storefront says about the business
- * lives here, so going live is a matter of editing this one file.
- *
- * TODO(shop owner): replace every value marked PLACEHOLDER below with the real
- * contact name, phone, WhatsApp number, email, address, map location and hours.
+ * Shop-wide configuration. The contact block (phone, email, address, map, socials)
+ * only seeds the database: the live values are edited in /admin/settings and read
+ * from the `settings` table, see lib/business.ts.
  */
 
 /**
@@ -30,7 +28,7 @@ export const site = {
   shortName: 'Padmavathi',
   tagline: 'Handcrafted Wooden Kitchenware',
   description:
-    'Padmavathi Enterprises hand-turns rolling pins, chakla, coconut scrapers, mathani churners, spatulas, spoons, spice boxes and mortar & pestles from solid teak, sheesham, neem and acacia. Chemical-free, food safe and shipped across India.',
+    'Padmavathi Enterprises hand-turns rolling pins, chakla, coconut scrapers, mathani churners, spatulas, spoons, chopping boards and mortar & pestles from solid teak, sheesham, neem and acacia. Chemical-free, food safe and shipped across India.',
   url: siteUrl,
   locale: 'en_IN',
 
@@ -38,12 +36,11 @@ export const site = {
     /** PLACEHOLDER: contact person shown on the contact card. */
     name: 'Padmavathi Enterprises',
     role: 'Orders, bulk & custom enquiries',
-    /** PLACEHOLDER: display format. */
-    phone: '+91 90000 00000',
-    /** PLACEHOLDER: E.164 without spaces, used for tel: links. */
-    phoneHref: '+919000000000',
-    /** PLACEHOLDER: digits only incl. country code, used for wa.me click-to-chat links. */
-    whatsapp: '919000000000',
+    phone: '+91 95900 77817',
+    /** E.164 without spaces, used for tel: links. */
+    phoneHref: '+919590077817',
+    /** Digits only incl. country code, used for wa.me click-to-chat links. Orders go here too. */
+    whatsapp: '919590077817',
     /** PLACEHOLDER */
     email: 'hello@padmavathi.example',
   },
@@ -83,19 +80,10 @@ export const site = {
   ],
 } as const;
 
-export const fullAddress = [site.address.line1, site.address.line2, site.address.city, site.address.state, site.address.pincode]
-  .filter(Boolean)
-  .join(', ');
-
-export function whatsappLink(message?: string) {
-  const text = message ? `?text=${encodeURIComponent(message)}` : '';
-  return `https://wa.me/${site.contact.whatsapp}${text}`;
-}
-
+/** Section anchors on the home page; labels come from i18n (`t.common.nav[key]`). */
 export const navLinks = [
-  { id: 'top', label: 'Home' },
-  { id: 'shop', label: 'Shop' },
-  { id: 'gift-sets', label: 'Gift Sets' },
-  { id: 'craft', label: 'Our Craft' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'shop', key: 'shop' },
+  { id: 'gift-sets', key: 'gifts' },
+  { id: 'craft', key: 'craft' },
+  { id: 'contact', key: 'contact' },
 ] as const;

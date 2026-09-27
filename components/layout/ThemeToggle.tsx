@@ -3,6 +3,7 @@
 import { useId } from 'react';
 import { useThemeStore } from '@/store/theme';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/client';
 
 /**
  * Sun ↔ moon pill. The sun's rays spin away and a shadow slides across the
@@ -13,7 +14,8 @@ export function ThemeToggle({ className }: { className?: string }) {
   const toggle = useThemeStore((s) => s.toggle);
   const resolved = useThemeStore((s) => s.resolved);
   const id = useId().replace(/:/g, '');
-  const label = resolved === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  const t = useT();
+  const label = resolved === 'dark' ? t.common.theme.toLight : t.common.theme.toDark;
 
   return (
     <button

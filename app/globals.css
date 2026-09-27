@@ -107,8 +107,8 @@
   --color-accent-fg: var(--accent-fg);
   --color-wood: var(--wood-text);
 
-  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
-  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), var(--font-kn-serif), var(--font-hi-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-poppins), var(--font-kn-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme {
@@ -386,47 +386,60 @@ body::after {
   }
 }
 
-/* ───────────────────────── Loader: a belan rolling out a roti ───────────────────────── */
-@keyframes pe-roll {
-  0% {
-    transform: translateX(-38px) rotate(0deg);
-  }
-  50% {
-    transform: translateX(38px) rotate(360deg);
-  }
-  100% {
-    transform: translateX(-38px) rotate(0deg);
-  }
-}
-.pe-belan-roll {
-  animation: pe-roll 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-@keyframes pe-belan-slide {
-  0% {
-    transform: translateX(-38px);
-  }
-  50% {
-    transform: translateX(38px);
-  }
-  100% {
-    transform: translateX(-38px);
-  }
-}
-.pe-belan-slide {
-  animation: pe-belan-slide 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-@keyframes pe-dough {
+/* ───────────────────────── Loader: a belan rolling out a roti (HeroLoader.tsx) ─────────────────────────
+   The pin rolls toward and away from the viewer (±9 units = ±10.08px, a touch larger when near).
+   Rolling without slipping, the grain on its front face runs the same way, 1/sin(15°) ≈ 3.82× as far.
+   Both share one duration and a sine-shaped ease so they stay locked; compositor-only transforms. */
+@keyframes pe-ld-belan {
   0%,
   100% {
-    transform: scaleX(0.92);
+    transform: translateY(-10.08px) scale(0.955);
   }
   50% {
-    transform: scaleX(1.06);
+    transform: translateY(10.08px) scale(1.045);
   }
 }
-.pe-dough {
-  animation: pe-dough 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-  transform-origin: center;
+@keyframes pe-ld-grain {
+  0%,
+  100% {
+    transform: translateY(-38.5px);
+  }
+  50% {
+    transform: translateY(38.5px);
+  }
+}
+/* the dough is pushed out along the stroke, most when the pin is at either end */
+@keyframes pe-ld-dough {
+  0%,
+  50%,
+  100% {
+    transform: scale(0.985, 1.1);
+  }
+  25%,
+  75% {
+    transform: scale(1, 1);
+  }
+}
+.pe-ld-belan,
+.pe-ld-grain,
+.pe-ld-dough {
+  /* longhands: the CSS minifier drops a shorthand that has no animation-name */
+  animation-duration: 1.7s;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.pe-ld-belan {
+  animation-name: pe-ld-belan;
+}
+.pe-ld-grain {
+  animation-name: pe-ld-grain;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 9px, rgb(107 53 23 / 0.5) 9px 10px, transparent 10px 15px),
+    repeating-linear-gradient(180deg, transparent 0 5px, rgb(107 53 23 / 0.28) 5px 5.8px, transparent 5.8px 22px);
+}
+.pe-ld-dough {
+  animation-name: pe-ld-dough;
 }
 
 @keyframes pe-scroll-dot {
@@ -477,5 +490,29 @@ body::after {
 @keyframes pe-marquee {
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* ───────────────────────── Kannada & Hindi ─────────────────────────
+   Letter-spacing breaks the Devanagari headline bar and spreads Kannada conjuncts, and
+   tight display line-heights clip vowel signs above and below the line. */
+:lang(kn),
+:lang(hi) {
+  & * {
+    letter-spacing: normal !important;
+  }
+  & :is(h1, h2, h3, blockquote) {
+    line-height: 1.32 !important;
+  }
+  /* longer words than English: keep the hero headline to a sensible size */
+  & #top h1 {
+    font-size: clamp(2.1rem, 8.4vw, 4.2rem);
+  }
+  & #top h2 {
+    font-size: clamp(1.9rem, 7.4vw, 3.6rem);
+  }
+  /* word-reveal masks need room for tall matras */
+  & .overflow-hidden.align-bottom {
+    padding-block: 0.12em 0.22em;
   }
 }

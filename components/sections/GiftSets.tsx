@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight, Box, Check, Gift, Heart, Home, PartyPopper, ShoppingCart, Users } from 'lucide-react';
-import { useRef } from 'react';
-import { products } from '@/data/products';
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useCatalog, useMinQty } from '@/components/layout/AppData';
+import { useT } from '@/i18n/client';
 import type { Product } from '@/data/types';
 import { useUIStore } from '@/store/ui';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -15,14 +16,12 @@ import { scrollToTarget } from '@/lib/scroll';
 import { selectEnquiryType, selectShopCategory } from '@/lib/events';
 import { cn, formatINR } from '@/lib/utils';
 
-const OCCASIONS = [
-  { Icon: Home, label: 'Gruhapravesha' },
-  { Icon: Heart, label: 'Weddings & return gifts' },
-  { Icon: PartyPopper, label: 'Diwali, Onam & Sankranti' },
-  { Icon: Users, label: 'Corporate gifting' },
-];
+const OCCASION_ICONS = [Home, Heart, PartyPopper, Users];
 
 function GiftCard({ product, index }: { product: Product; index: number }) {
+  const t = useT();
+  const g = t.sections.gifts;
+  const min = useMinQty();
   const { addToCart, added } = useAddToCart(product);
   const openQuickView = useUIStore((s) => s.openQuickView);
   const imgRef = useRef<HTMLDivElement>(null);
@@ -34,7 +33,7 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.9, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
-      className={cn('group relative flex flex-col', featured && 'lg:-mt-10')}
+      className={cn('group relative flex flex-col max-md:w-[84%] max-md:max-w-[22rem] max-md:shrink-0 max-md:snap-center', featured && 'lg:-mt-10')}
       aria-labelledby={`gift-${product.id}`}
     >
       <svg viewBox="0 0 80 40" className="absolute -top-5 left-1/2 z-30 h-10 w-20 -translate-x-1/2 drop-shadow transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-3" aria-hidden="true">
@@ -60,7 +59,7 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
             type="button"
             onClick={() => openQuickView(product.id)}
             className="absolute right-3 top-3 z-40 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#2e1d12] shadow-sm backdrop-blur transition-transform hover:scale-105"
-            aria-label={`View ${product.name} in 3D`}
+            aria-label={g.view3d(product.name)}
           >
             <Box size={14} aria-hidden="true" /> 3D
           </button>
@@ -70,7 +69,7 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
             <WoodChip wood={product.wood} />
             {featured && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#facc15] px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wider text-[#5c3a21]">
-                <Gift size={11} aria-hidden="true" /> Most gifted
+                <Gift size={11} aria-hidden="true" /> {g.mostGifted}
               </span>
             )}
           </div>
@@ -90,10 +89,12 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
           <div className="mt-auto flex items-end justify-between gap-3 pt-6">
             <div>
               <p className="font-display text-3xl font-semibold text-fg">{formatINR(variant.price)}</p>
-              <p className="text-xs text-muted">{variant.label} · + GST</p>
+              <p className="text-xs text-muted">
+                {variant.label} · {t.common.plusGst} · {t.common.minOrder(min)}
+              </p>
             </div>
-            <Button size="md" onClick={() => addToCart(variant.id, 1, imgRef.current)} aria-label={`Add ${product.name} to cart`}>
-              <ShoppingCart size={16} aria-hidden="true" /> {added ? 'Added' : 'Add'}
+            <Button size="md" onClick={() => addToCart(variant.id, min, imgRef.current)} aria-label={g.addAria(product.name, min)}>
+              <ShoppingCart size={16} aria-hidden="true" /> {added ? g.added : g.add}
             </Button>
           </div>
         </div>
@@ -102,8 +103,41 @@ function GiftCard({ product, index }: { product: Product; index: number }) {
   );
 }
 
+/** Index of the card nearest the centre of a horizontal snap scroller. */
+function useSnapIndex(ref: RefObject<HTMLElement | null>) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const mid = el.scrollLeft + el.clientWidth / 2;
+      let best = 0;
+      let dist = Infinity;
+      Array.from(el.children).forEach((c, i) => {
+        const child = c as HTMLElement;
+        const d = Math.abs(child.offsetLeft + child.offsetWidth / 2 - mid);
+        if (d < dist) [best, dist] = [i, d];
+      });
+      setIndex(best);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [ref]);
+  return index;
+}
+
 export function GiftSets() {
+  const t = useT();
+  const g = t.sections.gifts;
+  const { products } = useCatalog();
   const gifts = products.filter((p) => p.category === 'gifts');
+  const railRef = useRef<HTMLDivElement>(null);
+  const current = useSnapIndex(railRef);
+  const goTo = (i: number) => {
+    const el = railRef.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2, behavior: 'smooth' });
+  };
   return (
     <section id="gift-sets" aria-labelledby="gifts-title" className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgb(185_211_177/0.14)_30%,rgb(250_204_21/0.08)_70%,transparent)]" aria-hidden="true" />
@@ -111,13 +145,15 @@ export function GiftSets() {
       <div className="container-page relative">
         <SectionHeading
           id="gifts-title"
-          eyebrow="Gift sets"
-          title="Crated with"
-          accent="care"
-          subtitle="Our most-loved pieces, packed in a branded wooden crate or tied with jute and a hand-written tag. The gift that stays in the family kitchen for decades."
+          eyebrow={g.eyebrow}
+          title={g.title}
+          accent={g.accent}
+          subtitle={g.subtitle}
         />
         <ul className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-2.5">
-          {OCCASIONS.map(({ Icon, label }, i) => (
+          {g.occasions.map((label, i) => {
+            const Icon = OCCASION_ICONS[i] ?? Gift;
+            return (
             <motion.li
               key={label}
               initial={{ opacity: 0, scale: 0.8 }}
@@ -128,20 +164,43 @@ export function GiftSets() {
             >
               <Icon size={15} className="text-accent" aria-hidden="true" /> {label}
             </motion.li>
-          ))}
+            );
+          })}
         </ul>
 
-        <div className="mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {/* phones swipe through the sets; wider screens get the grid */}
+        <div
+          ref={railRef}
+          className="scrollbar-none mt-14 flex gap-4 max-md:-mx-4 max-md:snap-x max-md:snap-mandatory max-md:overflow-x-auto max-md:px-[8%] max-md:pb-4 max-md:pt-6 md:mt-20 md:grid md:grid-cols-2 md:gap-10 lg:grid-cols-3 lg:gap-8"
+        >
           {gifts.map((p, i) => (
             <GiftCard key={p.id} product={p} index={i} />
+          ))}
+        </div>
+        <div className="mt-3 flex items-center justify-center gap-2 md:hidden">
+          {gifts.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => goTo(i)}
+              aria-label={g.show(p.name)}
+              aria-current={current === i ? 'true' : undefined}
+              className="grid h-6 place-items-center px-0.5"
+            >
+              <span
+                className={cn(
+                  'block h-1.5 rounded-full transition-all duration-500',
+                  current === i ? 'w-6 bg-[linear-gradient(90deg,#3f7a5a,#c68642)]' : 'w-1.5 bg-line-strong',
+                )}
+              />
+            </button>
           ))}
         </div>
 
         <KolamBorder className="mx-auto mt-16 h-5 w-full max-w-lg text-honey/70" loops={18} />
         <div className="mt-8 flex flex-col items-center gap-4 text-center">
           <p className="max-w-xl text-muted">
-            Ordering return gifts for a wedding or a hundred crates for Diwali? We pack in bulk, add your name to the tag, and send a GST
-            invoice.
+            {g.bulkNote}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
@@ -149,11 +208,11 @@ export function GiftSets() {
               variant="walnut"
               magnetic
               onClick={() => {
-                selectEnquiryType('bulk');
+                selectEnquiryType('gifting');
                 scrollToTarget('#contact');
               }}
             >
-              Bulk & return-gift enquiry <ArrowRight size={18} aria-hidden="true" />
+              {g.bulkCta} <ArrowRight size={18} aria-hidden="true" />
             </Button>
             <Button
               size="lg"
@@ -163,7 +222,7 @@ export function GiftSets() {
                 scrollToTarget('#shop');
               }}
             >
-              See all gift sets
+              {g.seeAll}
             </Button>
           </div>
         </div>

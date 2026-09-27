@@ -47,12 +47,6 @@ export const CATEGORIES: Category[] = [
     tint: { light: ['#fbf6ea', '#e6d9bd'], dark: ['#322a1d', '#1a1610'] },
   },
   {
-    id: 'spice',
-    label: 'Spice Boxes',
-    short: 'Spice',
-    tint: { light: ['#fff5dc', '#fcd49a'], dark: ['#3f2c16', '#21170c'] },
-  },
-  {
     id: 'mortar',
     label: 'Mortar & Pestle',
     short: 'Mortar',

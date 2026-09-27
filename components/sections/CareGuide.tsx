@@ -5,40 +5,21 @@ import { Check, Citrus, Droplets, Sparkles, Sun, X } from 'lucide-react';
 import { useRef } from 'react';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { WoodShaving } from '@/components/ui/Kolam';
+import { useT } from '@/i18n/client';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const STEPS = [
-  {
-    Icon: Droplets,
-    title: 'Wash by hand',
-    body: 'Rinse with warm water and a drop of mild soap straight after use. A soft scrubber lifts dough and masala.',
-    tint: 'from-[#eaf3e4] to-[#cfe3c7] dark:from-[#1f3326] dark:to-[#15221a]',
-  },
-  {
-    Icon: Sun,
-    title: 'Dry standing up',
-    body: 'Wipe with a cloth and stand it upright to air dry, so both sides breathe. Never leave wood lying in water.',
-    tint: 'from-[#fff4d6] to-[#fde68a] dark:from-[#3f2c16] dark:to-[#2a1d0e]',
-  },
-  {
-    Icon: Sparkles,
-    title: 'Oil once a month',
-    body: 'Rub in a few drops of coconut oil with a soft cloth, leave it overnight and wipe off the excess. The grain glows again.',
-    tint: 'from-[#fbe7cf] to-[#e9c38f] dark:from-[#3d2818] dark:to-[#271a10]',
-  },
-  {
-    Icon: Citrus,
-    title: 'Refresh naturally',
-    body: 'For garlic or turmeric stains, scrub with half a lemon and coarse salt, rinse, dry and oil. Good as new.',
-    tint: 'from-[#eef7e4] to-[#cfe7c1] dark:from-[#223027] dark:to-[#161f19]',
-  },
+const STEP_STYLE = [
+  { Icon: Droplets, tint: 'from-[#eaf3e4] to-[#cfe3c7] dark:from-[#1f3326] dark:to-[#15221a]' },
+  { Icon: Sun, tint: 'from-[#fff4d6] to-[#fde68a] dark:from-[#3f2c16] dark:to-[#2a1d0e]' },
+  { Icon: Sparkles, tint: 'from-[#fbe7cf] to-[#e9c38f] dark:from-[#3d2818] dark:to-[#271a10]' },
+  { Icon: Citrus, tint: 'from-[#eef7e4] to-[#cfe7c1] dark:from-[#223027] dark:to-[#161f19]' },
 ];
 
-const DOS = ['Hand-wash and dry straight away', 'Oil it whenever it looks dry or pale', 'Store in a dry, airy spot', 'Sand lightly with fine paper if it feels fuzzy'];
-const DONTS = ['Dishwashers, soaking or boiling', 'Microwaves and ovens', 'Leaving it on a hot tawa or burner', 'Vegetable oils that go rancid (use coconut)'];
-
 export function CareGuide() {
+  const t = useT();
+  const c = t.sections.care;
+  const steps = c.steps.map((st, i) => ({ ...st, ...STEP_STYLE[i] }));
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 80%', 'end 60%'] });
   const line = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1]), { stiffness: 80, damping: 20 });
@@ -49,10 +30,10 @@ export function CareGuide() {
       <div className="container-page relative">
         <SectionHeading
           id="care-title"
-          eyebrow="Care guide"
-          title="Look after it, and it"
-          accent="lasts a lifetime"
-          subtitle="Wood is alive. Treat it a little like cast iron, with a quick wash and the occasional drink of oil, and it only gets better with age."
+          eyebrow={c.eyebrow}
+          title={c.title}
+          accent={c.accent}
+          subtitle={c.subtitle}
         />
 
         <div ref={ref} className="relative mt-16">
@@ -74,30 +55,36 @@ export function CareGuide() {
               style={{ pathLength: line }}
             />
           </svg>
-          <ol className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map(({ Icon, title, body, tint }, i) => (
+          {/* phones: the steps become a timeline whose thread draws itself as you scroll */}
+          <span className="absolute bottom-10 left-8 top-10 w-0.5 -translate-x-1/2 rounded-full bg-line sm:hidden" aria-hidden="true">
+            <motion.span className="block h-full w-full origin-top rounded-full bg-[linear-gradient(180deg,#3f7a5a,#c68642)]" style={{ scaleY: line }} />
+          </span>
+          <ol className="relative grid gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            {steps.map(({ Icon, title, body, tint }, i) => (
               <motion.li
                 key={title}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.8, delay: i * 0.12, ease: EASE }}
-                className="group flex flex-col items-center text-center"
+                className="group flex items-start gap-5 text-left sm:flex-col sm:items-center sm:gap-0 sm:text-center"
               >
-                <span className="relative">
+                <span className="relative shrink-0">
                   <motion.span
                     whileHover={{ rotate: [0, -8, 8, 0], scale: 1.06 }}
                     transition={{ duration: 0.6 }}
-                    className={`relative z-10 grid h-24 w-24 place-items-center rounded-full bg-gradient-to-br ${tint} text-fg shadow-lift ring-4 ring-bg`}
+                    className={`relative z-10 grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br ${tint} text-fg shadow-lift ring-4 ring-bg sm:h-24 sm:w-24`}
                   >
-                    <Icon size={34} strokeWidth={1.8} aria-hidden="true" />
+                    <Icon strokeWidth={1.8} className="size-6 sm:size-[34px]" aria-hidden="true" />
                   </motion.span>
-                  <span className="absolute -right-1 -top-1 z-20 grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(135deg,#f6d9a6,#e2a867)] font-display text-sm font-bold text-[#3a1f0c] shadow">
+                  <span className="absolute -right-1.5 -top-1.5 z-20 grid h-7 w-7 place-items-center rounded-full bg-[linear-gradient(135deg,#f6d9a6,#e2a867)] font-display text-xs font-bold text-[#3a1f0c] shadow sm:-right-1 sm:-top-1 sm:h-8 sm:w-8 sm:text-sm">
                     {i + 1}
                   </span>
                 </span>
-                <h3 className="mt-6 text-2xl font-semibold text-fg">{title}</h3>
-                <p className="mt-2 max-w-xs leading-relaxed text-muted">{body}</p>
+                <div className="min-w-0 pt-1 sm:pt-0">
+                  <h3 className="text-xl font-semibold text-fg sm:mt-6 sm:text-2xl">{title}</h3>
+                  <p className="mt-1.5 leading-relaxed text-muted sm:mx-auto sm:mt-2 sm:max-w-xs">{body}</p>
+                </div>
               </motion.li>
             ))}
           </ol>
@@ -105,8 +92,8 @@ export function CareGuide() {
 
         <div className="mx-auto mt-16 grid max-w-4xl gap-5 md:grid-cols-2">
           {[
-            { title: 'Do', list: DOS, Icon: Check, cls: 'bg-leaf/10 text-leaf', ring: 'border-leaf/25' },
-            { title: 'Don’t', list: DONTS, Icon: X, cls: 'bg-[#dc2626]/10 text-[#dc2626] dark:text-[#fca5a5]', ring: 'border-[#dc2626]/20' },
+            { title: c.do, list: c.dos, Icon: Check, cls: 'bg-leaf/10 text-leaf', ring: 'border-leaf/25' },
+            { title: c.dont, list: c.donts, Icon: X, cls: 'bg-[#dc2626]/10 text-[#dc2626] dark:text-[#fca5a5]', ring: 'border-[#dc2626]/20' },
           ].map(({ title, list, Icon, cls, ring }, k) => (
             <motion.div
               key={title}

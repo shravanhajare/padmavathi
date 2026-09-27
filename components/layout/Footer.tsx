@@ -5,14 +5,21 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowUp, Clock, Mail, MapPin, Phone } from 'lucide-react';
 import { CATEGORIES, type Category } from '@/data/categories';
-import { fullAddress, navLinks, site, whatsappLink } from '@/data/site';
+import { navLinks } from '@/data/site';
+import { useBusiness } from '@/components/layout/AppData';
 import { LogoMark } from '@/components/ui/Logo';
 import { Kolam, KolamBorder, WoodShaving } from '@/components/ui/Kolam';
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, YoutubeIcon } from '@/components/ui/icons';
 import { scrollToTarget } from '@/lib/scroll';
 import { selectShopCategory } from '@/lib/events';
+import { useCatalog } from './AppData';
+import { useT } from '@/i18n/client';
 
 export function Footer() {
+  const t = useT();
+  const biz = useBusiness();
+  const f = t.common.footer;
+  const { products } = useCatalog();
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
@@ -42,28 +49,27 @@ export function Footer() {
               <LogoMark className="h-14 w-14" />
               <div>
                 <p id="footer-title" className="font-display text-2xl font-bold text-fg">
-                  {site.name}
+                  {t.common.brand.name}
                 </p>
-                <p className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-muted">{site.tagline}</p>
+                <p className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-muted">{t.common.brand.tagline}</p>
               </div>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
-              Hand-turned rolling pins, chakla, coconut scrapers, churners and more, made from solid, seasoned Indian hardwood and
-              finished with nothing but food-grade oil.
+              {f.blurb}
             </p>
             <div className="mt-6 flex gap-2.5">
               {[
-                { href: site.socials.instagram, label: 'Instagram', Icon: InstagramIcon },
-                { href: site.socials.facebook, label: 'Facebook', Icon: FacebookIcon },
-                { href: site.socials.youtube, label: 'YouTube', Icon: YoutubeIcon },
-                { href: whatsappLink(`Hello ${site.shortName}!`), label: 'WhatsApp', Icon: WhatsAppIcon },
+                { href: biz.socials.instagram, label: 'Instagram', Icon: InstagramIcon },
+                { href: biz.socials.facebook, label: 'Facebook', Icon: FacebookIcon },
+                { href: biz.socials.youtube, label: 'YouTube', Icon: YoutubeIcon },
+                { href: biz.waLink(t.common.whatsappHello), label: 'WhatsApp', Icon: WhatsAppIcon },
               ].map(({ href, label, Icon }) => (
                 <motion.a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${site.shortName} on ${label}`}
+                  aria-label={f.on(label)}
                   whileHover={{ y: -3, rotate: -6 }}
                   whileTap={{ scale: 0.92 }}
                   className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface text-fg transition-colors hover:border-honey hover:text-accent"
@@ -74,69 +80,69 @@ export function Footer() {
             </div>
           </div>
 
-          <nav aria-label="Shop categories">
-            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">Shop</h2>
+          <nav aria-label={f.categories}>
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">{f.shop}</h2>
             <ul className="mt-4 space-y-2.5 text-sm">
-              {CATEGORIES.filter((c) => c.id !== 'all').map((c) => (
+              {CATEGORIES.filter((c) => c.id !== 'all' && products.some((p) => p.category === c.id)).map((c) => (
                 <li key={c.id}>
                   <button type="button" onClick={() => goCategory(c.id)} className="group inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
                     <span className="h-px w-0 bg-honey transition-all duration-300 group-hover:w-3" aria-hidden="true" />
-                    {c.label}
+                    {t.catalog.categories[c.id]}
                   </button>
                 </li>
               ))}
             </ul>
           </nav>
 
-          <nav aria-label="Footer">
-            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">Explore</h2>
+          <nav aria-label={f.footer}>
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">{f.explore}</h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {navLinks.map((l) => (
                 <li key={l.id}>
-                  <Link href={l.id === 'top' ? '/' : `/#${l.id}`} className="group inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
+                  <Link href={`/#${l.id}`} className="group inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
                     <span className="h-px w-0 bg-honey transition-all duration-300 group-hover:w-3" aria-hidden="true" />
-                    {l.label}
+                    {t.common.nav[l.key]}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link href="/#care" className="group inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
                   <span className="h-px w-0 bg-honey transition-all duration-300 group-hover:w-3" aria-hidden="true" />
-                  Care guide
+                  {t.common.nav.care}
                 </Link>
               </li>
               <li>
                 <Link href="/cart" className="group inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
                   <span className="h-px w-0 bg-honey transition-all duration-300 group-hover:w-3" aria-hidden="true" />
-                  Your cart
+                  {t.common.nav.cart}
                 </Link>
               </li>
             </ul>
           </nav>
 
           <div>
-            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">Visit the workshop</h2>
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-wood">{f.visit}</h2>
             <ul className="mt-4 space-y-3.5 text-sm text-muted">
               <li className="flex gap-3">
                 <MapPin size={17} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
-                <address className="not-italic">{fullAddress}</address>
+                <address className="not-italic">{biz.fullAddress}</address>
               </li>
               <li className="flex gap-3">
                 <Phone size={17} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
-                <a href={`tel:${site.contact.phoneHref}`} className="hover:text-fg">
-                  {site.contact.phone}
+                <a href={`tel:${biz.tel}`} className="hover:text-fg">
+                  {biz.phone}
                 </a>
               </li>
               <li className="flex gap-3">
                 <Mail size={17} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
-                <a href={`mailto:${site.contact.email}`} className="break-all hover:text-fg">
-                  {site.contact.email}
+                <a href={`mailto:${biz.email}`} className="break-all hover:text-fg">
+                  {biz.email}
                 </a>
               </li>
               <li className="flex gap-3">
                 <Clock size={17} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                 <span>
-                  {site.hours.map((h) => (
+                  {t.sections.contact.hours.map((h) => (
                     <span key={h.days} className="block">
                       {h.days}: {h.time}
                     </span>
@@ -159,14 +165,14 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-line pt-6 text-xs text-muted sm:flex-row">
           <p>
-            © {new Date().getFullYear()} {site.name}. Made by hand in India.
+            © {new Date().getFullYear()} {t.common.brand.name}. {f.madeBy}
           </p>
           <button
             type="button"
             onClick={() => scrollToTarget(0, { duration: 2 })}
             className="group inline-flex items-center gap-2 rounded-full border border-line-strong px-4 py-2 font-semibold text-fg transition-colors hover:border-honey"
           >
-            Back to top <ArrowUp size={14} className="transition-transform group-hover:-translate-y-0.5" aria-hidden="true" />
+            {f.backToTop} <ArrowUp size={14} className="transition-transform group-hover:-translate-y-0.5" aria-hidden="true" />
           </button>
         </div>
       </div>
